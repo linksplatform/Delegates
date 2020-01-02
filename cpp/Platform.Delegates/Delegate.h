@@ -20,83 +20,55 @@ namespace Platform::Delegates
     template <typename... Args>
     struct Delegate<void(Args...)>
     {
-        struct base {
-            virtual ~base() {}
-            virtual bool do_cmp(base* other) = 0;
-            virtual void do_call(Args... args) = 0;
-        };
-        template <typename T>
-        struct call : base {
-            T d_callback;
-            template <typename S>
-            call(S&& callback) : d_callback(std::forward<S>(callback)) {}
-
-            bool do_cmp(base* other) {
-                call<T>* tmp = dynamic_cast<call<T>*>(other);
-                return tmp && this->d_callback == tmp->d_callback;
-            }
-            void do_call(Args... args) {
-                return this->d_callback(std::forward<Args>(args)...);
-            }
-        };
-        std::vector<std::unique_ptr<base>> d_callbacks;
+        std::vector<std::function<void(Args...)>> callbacks;
 
         Delegate(Delegate const&) = delete;
+
         void operator=(Delegate const&) = delete;
-    public:
-        Delegate() {}
-        template <typename T>
-        Delegate& operator+= (T&& callback) {
-            this->d_callbacks.emplace_back(new call<T>(std::forward<T>(callback)));
-            return *this;
-        }
-        template <typename T>
-        Delegate& operator-= (T&& callback) {
-            call<T> tmp(std::forward<T>(callback));
-            auto it = std::remove_if(this->d_callbacks.begin(),
-                this->d_callbacks.end(),
-                [&](std::unique_ptr<base>& other) {
-                    return tmp.do_cmp(other.get());
-                });
-            this->d_callbacks.erase(it, this->d_callbacks.end());
-            return *this;
+
+        class FunctionAccesser : public std::function<void(Args...)>
+        {
+        public:
+            const void* Target()
+            {
+                return this->_Target(this->_Target_type());
+            }
+        };
+
+        template<typename... U>
+        size_t getAddress(std::function<void(Args...)> f) {
+            typedef void(fnType)(Args...);
+            const auto functionPointerTypeName = f.target_type().name();
+            FunctionAccesser* functionAccesser = reinterpret_cast<FunctionAccesser*>(&f);
+            fnType** fnPointer = f.template target<fnType*>();
+            const fnType** voidPointer = (const fnType **) functionAccesser->Target();
+            return (size_t)*voidPointer;
         }
 
-        void operator()(Args... args) {
-            for (auto& callback : this->d_callbacks) {
-                callback->do_call(args...);
+    public:
+        Delegate() {}
+
+        void operator+= (std::function<void(Args...)> callback)
+        {
+            this->callbacks.emplace_back(callback);
+        }
+
+        void operator-= (std::function<void(Args...)> callback)
+        {
+            auto deletedRange = std::remove_if(this->callbacks.begin(), this->callbacks.end(), [&](std::function<void(Args...)>& other) {
+                return getAddress(callback) == getAddress(other);
+                });
+            this->callbacks.erase(deletedRange, this->callbacks.end());
+        }
+
+        void operator()(Args... args)
+        {
+            for (auto callback : this->callbacks)
+            {
+                callback(args...);
             }
         }
     };
-
-    // ----------------------------------------------------------------------------
-
-    template <typename RC, typename Class, typename... Args>
-    class member_call {
-        Class* d_object;
-        RC(Class::* d_member)(Args...);
-    public:
-        member_call(Class* object, RC(Class::* member)(Args...))
-            : d_object(object)
-            , d_member(member) {
-        }
-        RC operator()(Args... args) {
-            return (this->d_object->*this->d_member)(std::forward<Args>(args)...);
-        }
-        bool operator== (member_call const& other) const {
-            return this->d_object == other.d_object
-                && this->d_member == other.d_member;
-        }
-        bool operator!= (member_call const& other) const {
-            return !(*this == other);
-        }
-    };
-
-    template <typename RC, typename Class, typename... Args>
-    member_call<RC, Class, Args...> mem_call(Class& object,
-        RC(Class::* member)(Args...)) {
-        return member_call<RC, Class, Args...>(&object, member);
-    }
 }
 
 #endif

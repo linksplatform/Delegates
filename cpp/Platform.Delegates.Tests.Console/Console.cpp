@@ -37,14 +37,13 @@ int main()
     d0 += g;
     d0 += h;
 
-    // d0 += std::bind(&foo::bar, f0, std::placeholders::_1);
-    d0 += mem_call(f0, &foo::bar);
-    d0 += mem_call(f0, &foo::cbs);
-    d0 += mem_call(f1, &foo::bar);
-    d0 += mem_call(f1, &foo::cbs);
+    d0 += std::bind(&foo::bar, f0, std::placeholders::_1);
+    d0 += std::bind(&foo::cbs, f0, std::placeholders::_1);
+    d0 += std::bind(&foo::bar, f1, std::placeholders::_1);
+    d0 += std::bind(&foo::cbs, f1, std::placeholders::_1);
     d0("first call");
     d0 -= g;
-    d0 -= mem_call(f0, &foo::cbs);
-    d0 -= mem_call(f1, &foo::bar);
+    d0 -= std::bind(&foo::cbs, f0, std::placeholders::_1);
+    d0 -= std::bind(&foo::bar, f1, std::placeholders::_1);
     d0("second call");
 }
