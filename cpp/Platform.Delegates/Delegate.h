@@ -7,8 +7,6 @@
 
 #include <algorithm>
 #include <iostream>
-#include <memory>
-#include <utility>
 #include <vector>
 #include <functional>
 
@@ -26,7 +24,8 @@ namespace Platform::Delegates
 
         void operator=(Delegate const&) = delete;
 
-        class FunctionAccesser : public std::function<void(Args...)>
+        // Access to protected Target method of std::function
+        class FunctionTargetAccesser : public std::function<void(Args...)>
         {
         public:
             const void* Target()
@@ -35,14 +34,32 @@ namespace Platform::Delegates
             }
         };
 
+        // This function is a hack and may be unreliable
         template<typename... U>
-        size_t getAddress(std::function<void(Args...)> f) {
-            typedef void(fnType)(Args...);
-            const auto functionPointerTypeName = f.target_type().name();
-            FunctionAccesser* functionAccesser = reinterpret_cast<FunctionAccesser*>(&f);
-            fnType** fnPointer = f.template target<fnType*>();
-            const fnType** voidPointer = (const fnType **) functionAccesser->Target();
-            return (size_t)*voidPointer;
+        size_t getFunctionIdentifier(std::function<void(Args...)> f) {
+            typedef void(functionType)(Args...);
+            FunctionTargetAccesser* functionTargetAccesser = reinterpret_cast<FunctionTargetAccesser*>(&f);
+            const functionType** functionPointer = (const functionType**)functionTargetAccesser->Target();
+            const functionType** mayBeFirstArgumentPointer = functionPointer + 2;
+            if (*mayBeFirstArgumentPointer)
+            {
+                // Function unique for each member method pointer and it's bound container class pointer
+                // This also works for standalone methods
+                return (size_t)*functionPointer ^ (size_t)*mayBeFirstArgumentPointer;
+            }
+            else
+            {
+                // Function unique for each member method pointer and it's bound arguments
+                int* mayBeArgumentValue = (int*)(functionPointer + 1);
+                size_t hash = (size_t)*functionPointer;
+                int fillerValue = *mayBeArgumentValue;
+                do
+                {
+                    mayBeArgumentValue++;
+                    hash ^= (size_t)*mayBeArgumentValue;
+                } while (*mayBeArgumentValue != fillerValue);
+                return hash;
+            }
         }
 
     public:
@@ -56,7 +73,7 @@ namespace Platform::Delegates
         void operator-= (std::function<void(Args...)> callback)
         {
             auto deletedRange = std::remove_if(this->callbacks.begin(), this->callbacks.end(), [&](std::function<void(Args...)>& other) {
-                return getAddress(callback) == getAddress(other);
+                return getFunctionIdentifier(callback) == getFunctionIdentifier(other);
                 });
             this->callbacks.erase(deletedRange, this->callbacks.end());
         }

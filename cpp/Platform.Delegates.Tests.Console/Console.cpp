@@ -14,12 +14,16 @@ void h(char const* str) { std::cout << "h(" << str << ")\n"; }
 struct foo
 {
     int d_id;
-    explicit foo(int id) : d_id(id) {}
+    int bar_calls;
+    int cbs_calls;
+    explicit foo(int id) : d_id(id), bar_calls(0), cbs_calls(0) {}
     void bar(char const* str) {
         std::cout << "foo(" << this->d_id << ")::bar(" << str << ")\n";
+        this->bar_calls++;
     }
     void cbs(char const* str) {
         std::cout << "foo(" << this->d_id << ")::cbs(" << str << ")\n";
+        this->cbs_calls++;
     }
 };
 
@@ -37,13 +41,13 @@ int main()
     d0 += g;
     d0 += h;
 
-    d0 += std::bind(&foo::bar, f0, std::placeholders::_1);
-    d0 += std::bind(&foo::cbs, f0, std::placeholders::_1);
-    d0 += std::bind(&foo::bar, f1, std::placeholders::_1);
-    d0 += std::bind(&foo::cbs, f1, std::placeholders::_1);
+    d0 += std::bind(&foo::bar, &f0, std::placeholders::_1);
+    d0 += std::bind(&foo::cbs, &f0, std::placeholders::_1);
+    d0 += std::bind(&foo::bar, &f1, std::placeholders::_1);
+    d0 += std::bind(&foo::cbs, &f1, std::placeholders::_1);
     d0("first call");
     d0 -= g;
-    d0 -= std::bind(&foo::cbs, f0, std::placeholders::_1);
-    d0 -= std::bind(&foo::bar, f1, std::placeholders::_1);
+    d0 -= std::bind(&foo::cbs, &f0, std::placeholders::_1);
+    d0 -= std::bind(&foo::bar, &f1, std::placeholders::_1);
     d0("second call");
 }
