@@ -38,13 +38,7 @@ namespace Platform::Delegates
             return *functionPointer;
         }
 
-        // Simple function means no std::bind was used
-        static bool IsSimpleFunction(std::function<void(Args...)>& function)
-        {
-            return GetFunctionTarget(function) != NULL;
-        }
-
-        static bool AreEqual(std::function<void(Args...)>& left, std::function<void(Args...)>& right)
+        static bool AreFunctionsEqual(std::function<void(Args...)>& left, std::function<void(Args...)>& right)
         {
             auto leftTargetPointer = GetFunctionTarget(left);
             auto rightTargetPointer = GetFunctionTarget(right);
@@ -61,8 +55,8 @@ namespace Platform::Delegates
             const int size = sizeof(std::function<void(Args...)>);
             std::byte leftArray[size] = { {(std::byte)0} };
             std::byte rightArray[size] = { {(std::byte)0} };
-            std::byte* leftByte = (std::byte*) new (&leftArray) std::function<void(Args...)>(left);
-            std::byte* rightByte = (std::byte*) new (&rightArray) std::function<void(Args...)>(right);
+            std::byte* leftByte = (std::byte*) new (&leftArray) std::function<void(Args...)>(left); //-V572
+            std::byte* rightByte = (std::byte*) new (&rightArray) std::function<void(Args...)>(right); //-V572
 
             // PrintFunctionsBytes(leftByte, rightByte, size);
 
@@ -84,7 +78,7 @@ namespace Platform::Delegates
             return true;
         }
 
-        static void ResetAt(std::byte* leftArray, std::byte* rightArray, int i)
+        static void ResetAt(std::byte* leftArray, std::byte* rightArray, size_t i)
         {
             leftArray[i] = (std::byte)0;
             rightArray[i] = (std::byte)0;
@@ -95,12 +89,12 @@ namespace Platform::Delegates
             std::vector<std::byte> leftVector(leftFirstByte, leftFirstByte + size);
             std::vector<std::byte> rightVector(rightFirstByte, rightFirstByte + size);
             std::cout << "Left: ";
-            for (int i = 0; i < size; i++)
+            for (size_t i = 0; i < size; i++)
             {
                 std::cout << i << ':' << (int)leftVector[i] << std::endl;
             }
             std::cout << "Right: ";
-            for (int i = 0; i < size; i++)
+            for (size_t i = 0; i < size; i++)
             {
                 std::cout << i << ':' << (int)rightVector[i] << std::endl;
             }
@@ -121,7 +115,7 @@ namespace Platform::Delegates
             auto deletedRange = std::remove_if(this->callbacks.begin(), this->callbacks.end(),
                 [&](std::function<void(Args...)>& other)
                 {
-                    return AreEqual(callback, other);
+                    return AreFunctionsEqual(callback, other);
                 });
             this->callbacks.erase(deletedRange, this->callbacks.end());
         }
