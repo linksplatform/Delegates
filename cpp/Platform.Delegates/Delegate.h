@@ -1,5 +1,4 @@
 #pragma once
-
 #ifndef PLATFORM_DELEGATES_DELEGATE
 #define PLATFORM_DELEGATES_DELEGATE
 
@@ -57,10 +56,8 @@ namespace Platform::Delegates
             std::byte rightArray[size] = { {(std::byte)0} };
             new (&leftArray) std::function<void(Args...)>(left);
             new (&rightArray) std::function<void(Args...)>(right);
-            std::byte* leftByte = leftArray;
-            std::byte* rightByte = rightArray;
 
-            // PrintFunctionsBytes(leftByte, rightByte, size);
+            // PrintBytes(leftArray, rightArray, size);
 
             // Here the HACK starts
             // By resetting certain values we are able to compare functions correctly
@@ -70,6 +67,8 @@ namespace Platform::Delegates
             ResetAt(leftArray, rightArray, 57);
             // Here the HACK ends
 
+            std::byte* leftByte = leftArray;
+            std::byte* rightByte = rightArray;
             for (int i = 0; i < size; i++, leftByte++, rightByte++)
             {
                 if (*leftByte != *rightByte)
@@ -86,19 +85,20 @@ namespace Platform::Delegates
             rightArray[i] = (std::byte)0;
         }
 
-        static void PrintFunctionsBytes(std::byte* leftFirstByte, std::byte* rightFirstByte, unsigned long long size)
+        static void PrintBytes(std::byte* leftFirstByte, std::byte* rightFirstByte, unsigned long long size)
         {
-            std::vector<std::byte> leftVector(leftFirstByte, leftFirstByte + size);
-            std::vector<std::byte> rightVector(rightFirstByte, rightFirstByte + size);
-            std::cout << "Left: ";
+            std::cout << "Left: " << std::endl;
+            PrintBytes(leftFirstByte, size);
+            std::cout << "Right: " << std::endl;
+            PrintBytes(rightFirstByte, size);
+        }
+
+        static void PrintBytes(std::byte* firstByte, unsigned long long size)
+        {
+            std::vector<std::byte> vector(firstByte, firstByte + size);
             for (size_t i = 0; i < size; i++)
             {
-                std::cout << i << ':' << (int)leftVector[i] << std::endl;
-            }
-            std::cout << "Right: ";
-            for (size_t i = 0; i < size; i++)
-            {
-                std::cout << i << ':' << (int)rightVector[i] << std::endl;
+                std::cout << i << ':' << (int)vector[i] << std::endl;
             }
         }
 
