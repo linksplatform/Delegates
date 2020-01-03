@@ -47,9 +47,9 @@ namespace Platform::Delegates
             return leftTargetPointer == rightTargetPointer;
         }
 
-        static bool AreBoundFounctionsEqual(DelegateFunctionType& left, DelegateFunctionType& right)
+        static bool AreBoundFounctionsEqual(const DelegateFunctionType& left, const DelegateFunctionType& right)
         {
-            const int size = sizeof(DelegateFunctionType);
+            const size_t size = sizeof(DelegateFunctionType);
             std::byte leftArray[size] = { {(std::byte)0} };
             std::byte rightArray[size] = { {(std::byte)0} };
             new (&leftArray) DelegateFunctionType(left);
@@ -68,13 +68,13 @@ namespace Platform::Delegates
             return std::equal(std::begin(leftArray), std::end(leftArray), std::begin(rightArray));
         }
 
-        static void ResetAt(std::byte* leftArray, std::byte* rightArray, size_t i)
+        static void ResetAt(std::byte* leftArray, std::byte* rightArray, const size_t i)
         {
             leftArray[i] = (std::byte)0;
             rightArray[i] = (std::byte)0;
         }
 
-        static void PrintBytes(std::byte* leftFirstByte, std::byte* rightFirstByte, unsigned long long size)
+        static void PrintBytes(const std::byte* leftFirstByte, const std::byte* rightFirstByte, const size_t size)
         {
             std::cout << "Left: " << std::endl;
             PrintBytes(leftFirstByte, size);
@@ -82,7 +82,7 @@ namespace Platform::Delegates
             PrintBytes(rightFirstByte, size);
         }
 
-        static void PrintBytes(std::byte* firstByte, unsigned long long size)
+        static void PrintBytes(const std::byte* firstByte, const size_t size)
         {
             std::vector<std::byte> vector(firstByte, firstByte + size);
             for (size_t i = 0; i < size; i++)
@@ -94,11 +94,11 @@ namespace Platform::Delegates
     public:
         Delegate() {}
 
-        Delegate(Delegate const&) = delete;
+        Delegate(const Delegate&) = delete;
 
-        void operator=(Delegate const&) = delete;
+        void operator=(const Delegate&) = delete;
 
-        void operator+= (DelegateFunctionType&& callback)
+        void operator+= (const DelegateFunctionType&& callback)
         {
             const std::lock_guard<std::mutex> lock(mutex);
             this->callbacks.emplace_back(callback);
