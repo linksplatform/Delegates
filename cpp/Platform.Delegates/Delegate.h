@@ -19,17 +19,19 @@ namespace Platform::Delegates
     template <typename... Args>
     class Delegate<void(Args...)>
     {
-        std::vector<std::function<void(Args...)>> callbacks;
+        typedef std::function<void(Args...)> DelegateFunctionType;
+        typedef void(DelegateRawFunctionType)(Args...);
+
+        std::vector<DelegateFunctionType> callbacks;
         std::mutex mutex;
 
         Delegate(Delegate const&) = delete;
 
         void operator=(Delegate const&) = delete;
 
-        static void* GetFunctionTarget(std::function<void(Args...)>& function)
+        static void* GetFunctionTarget(DelegateFunctionType& function)
         {
-            typedef void(functionType)(Args...);
-            functionType** functionPointer = function.template target<functionType*>();
+            DelegateRawFunctionType** functionPointer = function.template target<DelegateRawFunctionType*>();
             if (functionPointer == NULL)
             {
                 return NULL;
@@ -37,7 +39,7 @@ namespace Platform::Delegates
             return *functionPointer;
         }
 
-        static bool AreFunctionsEqual(std::function<void(Args...)>& left, std::function<void(Args...)>& right)
+        static bool AreFunctionsEqual(DelegateFunctionType& left, DelegateFunctionType& right)
         {
             auto leftTargetPointer = GetFunctionTarget(left);
             auto rightTargetPointer = GetFunctionTarget(right);
@@ -49,13 +51,13 @@ namespace Platform::Delegates
             return leftTargetPointer == rightTargetPointer;
         }
 
-        static bool AreBoundFounctionsEqual(std::function<void(Args...)>& left, std::function<void(Args...)>& right)
+        static bool AreBoundFounctionsEqual(DelegateFunctionType& left, DelegateFunctionType& right)
         {
-            const int size = sizeof(std::function<void(Args...)>);
+            const int size = sizeof(DelegateFunctionType);
             std::byte leftArray[size] = { {(std::byte)0} };
             std::byte rightArray[size] = { {(std::byte)0} };
-            new (&leftArray) std::function<void(Args...)>(left);
-            new (&rightArray) std::function<void(Args...)>(right);
+            new (&leftArray) DelegateFunctionType(left);
+            new (&rightArray) DelegateFunctionType(right);
 
             // PrintBytes(leftArray, rightArray, size);
 
@@ -105,17 +107,17 @@ namespace Platform::Delegates
     public:
         Delegate() {}
 
-        void operator+= (std::function<void(Args...)>&& callback)
+        void operator+= (DelegateFunctionType&& callback)
         {
             const std::lock_guard<std::mutex> lock(mutex);
             this->callbacks.emplace_back(callback);
         }
 
-        void operator-= (std::function<void(Args...)>&& callback)
+        void operator-= (DelegateFunctionType&& callback)
         {
             const std::lock_guard<std::mutex> lock(mutex);
             auto deletedRange = std::remove_if(this->callbacks.begin(), this->callbacks.end(),
-                [&](std::function<void(Args...)>& other)
+                [&](DelegateFunctionType& other)
                 {
                     return AreFunctionsEqual(callback, other);
                 });
