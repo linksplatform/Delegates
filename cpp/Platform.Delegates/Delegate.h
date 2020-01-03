@@ -1,66 +1,31 @@
 #pragma once
 
-#ifndef PLATFORM_DELEGATE
-#define PLATFORM_DELEGATE
+#ifndef PLATFORM_DELEGATES_DELEGATE
+#define PLATFORM_DELEGATES_DELEGATE
 
-// Based on https://stackoverflow.com/a/23974539/710069
+// Based on https://stackoverflow.com/a/23974539/710069 and https://stackoverflow.com/a/35920804/710069
 
 #include <algorithm>
 #include <iostream>
 #include <vector>
 #include <functional>
+#include <thread>
+#include <mutex>
 
 namespace Platform::Delegates
 {
     template <typename Signature>
-    struct Delegate;
+    class Delegate;
 
     template <typename... Args>
-    struct Delegate<void(Args...)>
+    class Delegate<void(Args...)>
     {
         std::vector<std::function<void(Args...)>> callbacks;
+        std::mutex mutex;
 
         Delegate(Delegate const&) = delete;
 
         void operator=(Delegate const&) = delete;
-
-        // Access to protected Target method of std::function
-        class FunctionTargetAccesser : public std::function<void(Args...)>
-        {
-        public:
-            const void* Target()
-            {
-                return this->_Target(this->_Target_type());
-            }
-        };
-
-        // This function is a hack and may be unreliable
-        size_t getFunctionIdentifier(std::function<void(Args...)> function)
-        {
-            typedef void(functionType)(Args...);
-            FunctionTargetAccesser* functionTargetAccesser = reinterpret_cast<FunctionTargetAccesser*>(&function);
-            const functionType** functionPointer = (const functionType**)functionTargetAccesser->Target();
-            const functionType** mayBeFirstArgumentPointer = functionPointer + 2;
-            if (*mayBeFirstArgumentPointer)
-            {
-                // Function unique for each member method pointer and it's bound container class pointer
-                // This also works for standalone methods
-                return (size_t)*functionPointer ^ (size_t)*mayBeFirstArgumentPointer;
-            }
-            else
-            {
-                // Function unique for each member method pointer and it's bound arguments
-                int* mayBeArgumentValue = (int*)(functionPointer + 1);
-                size_t hash = (size_t)*functionPointer;
-                int fillerValue = *mayBeArgumentValue;
-                do
-                {
-                    mayBeArgumentValue++;
-                    hash ^= (size_t)*mayBeArgumentValue;
-                } while (*mayBeArgumentValue != fillerValue);
-                return hash;
-            }
-        }
 
         // Simple function means no std::bind was used
         bool IsSimpleFunction(std::function<void(Args...)> function)
@@ -77,37 +42,35 @@ namespace Platform::Delegates
             std::byte rightArray[size] = { {(std::byte)0} };
             std::byte* leftByte = (std::byte*) new (&leftArray) std::function<void(Args...)>(left);
             std::byte* rightByte = (std::byte*) new (&rightArray) std::function<void(Args...)>(right);
-            PrintFunctionsBytes(leftByte, rightByte, size);
+
+            // PrintFunctionsBytes(leftByte, rightByte, size);
+
+            // Here the HACK starts
+            // By resetting certain values we are able to compare functions correctly
+            // When values are reset it has the same effect as when these values are ignored
             bool isSimpleFunction = IsSimpleFunction(left);
-            if (isSimpleFunction)
+            if (!isSimpleFunction)
             {
-                for (int i = 0; i < size; i++, leftByte++, rightByte++)
+                ResetAt(leftArray, rightArray, 16);
+            }
+            ResetAt(leftArray, rightArray, 56);
+            ResetAt(leftArray, rightArray, 57);
+            // Here the HACK ends
+
+            for (int i = 0; i < size; i++, leftByte++, rightByte++)
+            {
+                if (*leftByte != *rightByte)
                 {
-                    if ((i >= 56 && i <= 57))
-                    {
-                        continue;
-                    }
-                    if (*leftByte != *rightByte)
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
-            else
-            {
-                for (int i = 0; i < size; i++, leftByte++, rightByte++)
-                {
-                    if (i == 16 || (i >= 56 && i <= 57))
-                    {
-                        continue;
-                    }
-                    if (*leftByte != *rightByte)
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
+            return true;
+        }
+
+        void ResetAt(std::byte* leftArray, std::byte* rightArray, int i)
+        {
+            leftArray[i] = (std::byte)0;
+            rightArray[i] = (std::byte)0;
         }
 
         void PrintFunctionsBytes(std::byte* leftFirstByte, std::byte* rightFirstByte, unsigned long long size)
@@ -131,20 +94,24 @@ namespace Platform::Delegates
 
         void operator+= (std::function<void(Args...)> callback)
         {
+            const std::lock_guard<std::mutex> lock(mutex);
             this->callbacks.emplace_back(callback);
         }
 
         void operator-= (std::function<void(Args...)> callback)
         {
-            auto deletedRange = std::remove_if(this->callbacks.begin(), this->callbacks.end(), [&](std::function<void(Args...)>& other) {
-                return AreEqual(callback, other);
-                //return getFunctionIdentifier(callback) == getFunctionIdentifier(other);
+            const std::lock_guard<std::mutex> lock(mutex);
+            auto deletedRange = std::remove_if(this->callbacks.begin(), this->callbacks.end(),
+                [&](std::function<void(Args...)>& other)
+                {
+                    return AreEqual(callback, other);
                 });
             this->callbacks.erase(deletedRange, this->callbacks.end());
         }
 
         void operator()(Args... args)
         {
+            const std::lock_guard<std::mutex> lock(mutex);
             for (auto callback : this->callbacks)
             {
                 callback(args...);
