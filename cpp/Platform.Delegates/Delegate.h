@@ -74,7 +74,7 @@ namespace Platform::Delegates
             rightArray[i] = (std::byte)0;
         }
 
-        static void PrintBytes(const std::byte* leftFirstByte, const std::byte* rightFirstByte, const size_t size)
+        static void PrintBytes(std::byte* leftFirstByte, std::byte* rightFirstByte, const size_t size)
         {
             std::cout << "Left: " << std::endl;
             PrintBytes(leftFirstByte, size);
@@ -82,12 +82,16 @@ namespace Platform::Delegates
             PrintBytes(rightFirstByte, size);
         }
 
-        static void PrintBytes(const std::byte* firstByte, const size_t size)
+        static void PrintBytes(std::byte* firstByte, const size_t size)
         {
-            std::vector<std::byte> vector(firstByte, firstByte + size);
-            for (size_t i = 0; i < size; i++)
+            const std::byte* limitByte = firstByte + size;
+            std::byte* byte = firstByte;
+            size_t i = 0;
+            while (byte != limitByte)
             {
-                std::cout << i << ':' << (int)vector[i] << std::endl;
+                std::cout << i << ':' << (int)*byte << std::endl;
+                i++;
+                byte++;
             }
         }
 
