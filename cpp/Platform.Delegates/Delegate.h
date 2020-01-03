@@ -41,7 +41,7 @@ namespace Platform::Delegates
         {
             auto leftTargetPointer = GetFunctionTarget(left);
             auto rightTargetPointer = GetFunctionTarget(right);
-            // Only in the case we have to std::functions created using std::bind we have to use alternative way to compare functions
+            // Only in the case we have two std::functions created using std::bind we have to use alternative way to compare functions
             if (leftTargetPointer == NULL && rightTargetPointer == NULL)
             {
                 return AreBoundFounctionsEqual(left, right);
