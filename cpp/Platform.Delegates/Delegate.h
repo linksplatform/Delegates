@@ -55,8 +55,10 @@ namespace Platform::Delegates
             const int size = sizeof(std::function<void(Args...)>);
             std::byte leftArray[size] = { {(std::byte)0} };
             std::byte rightArray[size] = { {(std::byte)0} };
-            std::byte* leftByte = (std::byte*) new (&leftArray) std::function<void(Args...)>(left); //-V572
-            std::byte* rightByte = (std::byte*) new (&rightArray) std::function<void(Args...)>(right); //-V572
+            new (&leftArray) std::function<void(Args...)>(left);
+            new (&rightArray) std::function<void(Args...)>(right);
+            std::byte* leftByte = leftArray;
+            std::byte* rightByte = rightArray;
 
             // PrintFunctionsBytes(leftByte, rightByte, size);
 
