@@ -27,15 +27,36 @@ namespace Platform::Delegates
 
         void operator=(Delegate const&) = delete;
 
-        // Simple function means no std::bind was used
-        bool IsSimpleFunction(std::function<void(Args...)> function)
+        static void* GetFunctionTarget(std::function<void(Args...)>& function)
         {
             typedef void(functionType)(Args...);
             functionType** functionPointer = function.template target<functionType*>();
-            return functionPointer != NULL;
+            if (functionPointer == NULL)
+            {
+                return NULL;
+            }
+            return *functionPointer;
         }
 
-        bool AreEqual(std::function<void(Args...)> left, std::function<void(Args...)> right)
+        // Simple function means no std::bind was used
+        static bool IsSimpleFunction(std::function<void(Args...)>& function)
+        {
+            return GetFunctionTarget(function) != NULL;
+        }
+
+        static bool AreEqual(std::function<void(Args...)>& left, std::function<void(Args...)>& right)
+        {
+            auto leftTargetPointer = GetFunctionTarget(left);
+            auto rightTargetPointer = GetFunctionTarget(right);
+            // Only in the case we have to std::functions created using std::bind we have to use alternative way to compare functions
+            if (leftTargetPointer == NULL && rightTargetPointer == NULL)
+            {
+                return AreBoundFounctionsEqual(left, right);
+            }
+            return leftTargetPointer == rightTargetPointer;
+        }
+
+        static bool AreBoundFounctionsEqual(std::function<void(Args...)>& left, std::function<void(Args...)>& right)
         {
             const int size = sizeof(std::function<void(Args...)>);
             std::byte leftArray[size] = { {(std::byte)0} };
@@ -48,11 +69,7 @@ namespace Platform::Delegates
             // Here the HACK starts
             // By resetting certain values we are able to compare functions correctly
             // When values are reset it has the same effect as when these values are ignored
-            bool isSimpleFunction = IsSimpleFunction(left);
-            if (!isSimpleFunction)
-            {
-                ResetAt(leftArray, rightArray, 16);
-            }
+            ResetAt(leftArray, rightArray, 16);
             ResetAt(leftArray, rightArray, 56);
             ResetAt(leftArray, rightArray, 57);
             // Here the HACK ends
@@ -67,13 +84,13 @@ namespace Platform::Delegates
             return true;
         }
 
-        void ResetAt(std::byte* leftArray, std::byte* rightArray, int i)
+        static void ResetAt(std::byte* leftArray, std::byte* rightArray, int i)
         {
             leftArray[i] = (std::byte)0;
             rightArray[i] = (std::byte)0;
         }
 
-        void PrintFunctionsBytes(std::byte* leftFirstByte, std::byte* rightFirstByte, unsigned long long size)
+        static void PrintFunctionsBytes(std::byte* leftFirstByte, std::byte* rightFirstByte, unsigned long long size)
         {
             std::vector<std::byte> leftVector(leftFirstByte, leftFirstByte + size);
             std::vector<std::byte> rightVector(rightFirstByte, rightFirstByte + size);
@@ -92,13 +109,13 @@ namespace Platform::Delegates
     public:
         Delegate() {}
 
-        void operator+= (std::function<void(Args...)> callback)
+        void operator+= (std::function<void(Args...)>&& callback)
         {
             const std::lock_guard<std::mutex> lock(mutex);
             this->callbacks.emplace_back(callback);
         }
 
-        void operator-= (std::function<void(Args...)> callback)
+        void operator-= (std::function<void(Args...)>&& callback)
         {
             const std::lock_guard<std::mutex> lock(mutex);
             auto deletedRange = std::remove_if(this->callbacks.begin(), this->callbacks.end(),
