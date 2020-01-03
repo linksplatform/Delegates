@@ -19,8 +19,8 @@ namespace Platform::Delegates
     template <typename... Args>
     class Delegate<void(Args...)>
     {
-        typedef std::function<void(Args...)> DelegateFunctionType;
-        typedef void(DelegateRawFunctionType)(Args...);
+        using DelegateFunctionType = std::function<void(Args...)>;
+        using DelegateRawFunctionType = void(Args...);
 
         std::vector<DelegateFunctionType> callbacks;
         std::mutex mutex;
