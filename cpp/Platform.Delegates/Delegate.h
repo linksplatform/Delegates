@@ -72,16 +72,18 @@ namespace Platform::Delegates
 
         bool AreEqual(std::function<void(Args...)> left, std::function<void(Args...)> right)
         {
-            auto size = sizeof(std::function<void(Args...)>);
-            std::byte* leftByte = (std::byte*)(&left);
-            std::byte* rightByte = (std::byte*)(&right);
-            //PrintFunctionsBytes(leftByte, rightByte, size);
+            const int size = sizeof(std::function<void(Args...)>);
+            std::byte leftArray[size] = { {(std::byte)0} };
+            std::byte rightArray[size] = { {(std::byte)0} };
+            std::byte* leftByte = (std::byte*) new (&leftArray) std::function<void(Args...)>(left);
+            std::byte* rightByte = (std::byte*) new (&rightArray) std::function<void(Args...)>(right);
+            PrintFunctionsBytes(leftByte, rightByte, size);
             bool isSimpleFunction = IsSimpleFunction(left);
             if (isSimpleFunction)
             {
                 for (int i = 0; i < size; i++, leftByte++, rightByte++)
                 {
-                    if ((i >= 16 && i <= 29) || (i >= 32 && i <= 38) || (i >= 40 && i <= 45) || (i >= 48 && i <= 53) || (i >= 56 && i <= 57))
+                    if ((i >= 56 && i <= 57))
                     {
                         continue;
                     }
@@ -95,11 +97,7 @@ namespace Platform::Delegates
             {
                 for (int i = 0; i < size; i++, leftByte++, rightByte++)
                 {
-                    if (i == 20 || (i >= 32 && i <= 41) || (i >= 48 && i <= 53) || (i >= 56 && i <= 57))
-                    {
-                        continue;
-                    }
-                    if ((i >= 16 && i <= 19) || (i >= 32 && i <= 37) || (i >= 40 && i <= 45) || (i >= 48 && i <= 53) || (i >= 56 && i <= 57))
+                    if (i == 16 || (i >= 56 && i <= 57))
                     {
                         continue;
                     }
