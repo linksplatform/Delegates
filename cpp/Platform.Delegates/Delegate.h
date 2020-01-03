@@ -32,9 +32,9 @@ namespace Platform::Delegates
         static void* GetFunctionTarget(DelegateFunctionType& function)
         {
             DelegateRawFunctionType** functionPointer = function.template target<DelegateRawFunctionType*>();
-            if (functionPointer == NULL)
+            if (functionPointer == nullptr)
             {
-                return NULL;
+                return nullptr;
             }
             return *functionPointer;
         }
@@ -44,7 +44,7 @@ namespace Platform::Delegates
             auto leftTargetPointer = GetFunctionTarget(left);
             auto rightTargetPointer = GetFunctionTarget(right);
             // Only in the case we have two std::functions created using std::bind we have to use alternative way to compare functions
-            if (leftTargetPointer == NULL && rightTargetPointer == NULL)
+            if (leftTargetPointer == nullptr && rightTargetPointer == nullptr)
             {
                 return AreBoundFounctionsEqual(left, right);
             }
