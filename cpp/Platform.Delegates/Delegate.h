@@ -25,10 +25,6 @@ namespace Platform::Delegates
         std::vector<DelegateFunctionType> callbacks;
         std::mutex mutex;
 
-        Delegate(Delegate const&) = delete;
-
-        void operator=(Delegate const&) = delete;
-
         static void* GetFunctionTarget(DelegateFunctionType& function)
         {
             DelegateRawFunctionType** functionPointer = function.template target<DelegateRawFunctionType*>();
@@ -106,6 +102,10 @@ namespace Platform::Delegates
 
     public:
         Delegate() {}
+
+        Delegate(Delegate const&) = delete;
+
+        void operator=(Delegate const&) = delete;
 
         void operator+= (DelegateFunctionType&& callback)
         {
