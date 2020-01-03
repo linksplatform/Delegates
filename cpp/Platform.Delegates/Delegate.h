@@ -35,10 +35,10 @@ namespace Platform::Delegates
         };
 
         // This function is a hack and may be unreliable
-        template<typename... U>
-        size_t getFunctionIdentifier(std::function<void(Args...)> f) {
+        size_t getFunctionIdentifier(std::function<void(Args...)> function)
+        {
             typedef void(functionType)(Args...);
-            FunctionTargetAccesser* functionTargetAccesser = reinterpret_cast<FunctionTargetAccesser*>(&f);
+            FunctionTargetAccesser* functionTargetAccesser = reinterpret_cast<FunctionTargetAccesser*>(&function);
             const functionType** functionPointer = (const functionType**)functionTargetAccesser->Target();
             const functionType** mayBeFirstArgumentPointer = functionPointer + 2;
             if (*mayBeFirstArgumentPointer)
@@ -62,6 +62,72 @@ namespace Platform::Delegates
             }
         }
 
+        // Simple function means no std::bind was used
+        bool IsSimpleFunction(std::function<void(Args...)> function)
+        {
+            typedef void(functionType)(Args...);
+            functionType** functionPointer = function.template target<functionType*>();
+            return functionPointer != NULL;
+        }
+
+        bool AreEqual(std::function<void(Args...)> left, std::function<void(Args...)> right)
+        {
+            auto size = sizeof(std::function<void(Args...)>);
+            std::byte* leftByte = (std::byte*)(&left);
+            std::byte* rightByte = (std::byte*)(&right);
+            //PrintFunctionsBytes(leftByte, rightByte, size);
+            bool isSimpleFunction = IsSimpleFunction(left);
+            if (isSimpleFunction)
+            {
+                for (int i = 0; i < size; i++, leftByte++, rightByte++)
+                {
+                    if ((i >= 16 && i <= 29) || (i >= 32 && i <= 38) || (i >= 40 && i <= 45) || (i >= 48 && i <= 53) || (i >= 56 && i <= 57))
+                    {
+                        continue;
+                    }
+                    if (*leftByte != *rightByte)
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < size; i++, leftByte++, rightByte++)
+                {
+                    if (i == 20 || (i >= 32 && i <= 41) || (i >= 48 && i <= 53) || (i >= 56 && i <= 57))
+                    {
+                        continue;
+                    }
+                    if ((i >= 16 && i <= 19) || (i >= 32 && i <= 37) || (i >= 40 && i <= 45) || (i >= 48 && i <= 53) || (i >= 56 && i <= 57))
+                    {
+                        continue;
+                    }
+                    if (*leftByte != *rightByte)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+
+        void PrintFunctionsBytes(std::byte* leftFirstByte, std::byte* rightFirstByte, unsigned long long size)
+        {
+            std::vector<std::byte> leftVector(leftFirstByte, leftFirstByte + size);
+            std::vector<std::byte> rightVector(rightFirstByte, rightFirstByte + size);
+            std::cout << "Left: ";
+            for (int i = 0; i < size; i++)
+            {
+                std::cout << i << ':' << (int)leftVector[i] << std::endl;
+            }
+            std::cout << "Right: ";
+            for (int i = 0; i < size; i++)
+            {
+                std::cout << i << ':' << (int)rightVector[i] << std::endl;
+            }
+        }
+
     public:
         Delegate() {}
 
@@ -73,7 +139,8 @@ namespace Platform::Delegates
         void operator-= (std::function<void(Args...)> callback)
         {
             auto deletedRange = std::remove_if(this->callbacks.begin(), this->callbacks.end(), [&](std::function<void(Args...)>& other) {
-                return getFunctionIdentifier(callback) == getFunctionIdentifier(other);
+                return AreEqual(callback, other);
+                //return getFunctionIdentifier(callback) == getFunctionIdentifier(other);
                 });
             this->callbacks.erase(deletedRange, this->callbacks.end());
         }
