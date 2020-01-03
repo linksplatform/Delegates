@@ -65,16 +65,7 @@ namespace Platform::Delegates
             ResetAt(leftArray, rightArray, 57);
             // Here the HACK ends
 
-            std::byte* leftByte = leftArray;
-            std::byte* rightByte = rightArray;
-            for (int i = 0; i < size; i++, leftByte++, rightByte++)
-            {
-                if (*leftByte != *rightByte)
-                {
-                    return false;
-                }
-            }
-            return true;
+            return std::equal(std::begin(leftArray), std::end(leftArray), std::begin(rightArray));
         }
 
         static void ResetAt(std::byte* leftArray, std::byte* rightArray, size_t i)
