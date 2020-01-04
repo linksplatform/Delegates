@@ -16,10 +16,10 @@ namespace Platform::Delegates
     template <typename Signature>
     class Delegate;
 
-    template <typename... Args>
-    class Delegate<void(Args...)>
+    template <typename ReturnType, typename... Args>
+    class Delegate<ReturnType(Args...)>
     {
-        using DelegateRawFunctionType = void(Args...);
+        using DelegateRawFunctionType = ReturnType(Args...);
         using DelegateFunctionType = std::function<DelegateRawFunctionType>;
 
         std::vector<DelegateFunctionType> callbacks;
@@ -54,18 +54,23 @@ namespace Platform::Delegates
             std::byte rightArray[size] = { {(std::byte)0} };
             new (&leftArray) DelegateFunctionType(left);
             new (&rightArray) DelegateFunctionType(right);
-
             // PrintBytes(leftArray, rightArray, size);
+            ApplyHack(leftArray, rightArray, size);
+            return std::equal(std::begin(leftArray), std::end(leftArray), std::begin(rightArray));
+        }
 
-            // Here the HACK starts
+        static void ApplyHack(std::byte* leftArray, std::byte* rightArray, const size_t size)
+        {
+            // Throw exception to prevent memory damage
+            if (size != 64)
+            {
+                throw std::logic_error("Function comparison is not supported in your environment.");
+            }
             // By resetting certain values we are able to compare functions correctly
             // When values are reset it has the same effect as when these values are ignored
             ResetAt(leftArray, rightArray, 16);
             ResetAt(leftArray, rightArray, 56);
             ResetAt(leftArray, rightArray, 57);
-            // Here the HACK ends
-
-            return std::equal(std::begin(leftArray), std::end(leftArray), std::begin(rightArray));
         }
 
         static void ResetAt(std::byte* leftArray, std::byte* rightArray, const size_t i)
@@ -98,6 +103,11 @@ namespace Platform::Delegates
     public:
         Delegate() {}
 
+        Delegate(const DelegateFunctionType& callback)
+        {
+            this += callback;
+        }
+
         Delegate(const Delegate&) = delete;
 
         void operator=(const Delegate&) = delete;
@@ -111,21 +121,31 @@ namespace Platform::Delegates
         void operator-= (DelegateFunctionType&& callback)
         {
             const std::lock_guard<std::mutex> lock(mutex);
-            auto deletedRange = std::remove_if(this->callbacks.begin(), this->callbacks.end(),
+            auto searchResult = std::find_if(this->callbacks.rbegin(), this->callbacks.rend(),
                 [&](DelegateFunctionType& other)
                 {
                     return AreFunctionsEqual(callback, other);
                 });
-            this->callbacks.erase(deletedRange, this->callbacks.end());
+            if (searchResult != this->callbacks.rend()) {
+                auto removedCallbackPosition = --(searchResult.base());
+                this->callbacks.erase(removedCallbackPosition);
+            }
         }
 
-        void operator()(Args... args)
+        ReturnType operator()(Args... args)
         {
             const std::lock_guard<std::mutex> lock(mutex);
-            for (auto callback : this->callbacks)
+            auto callbacksSize = this->callbacks.size();
+            if (callbacksSize == 0)
             {
-                callback(args...);
+                throw std::bad_function_call();
             }
+            auto lastElement = callbacksSize - 1;
+            for (size_t i = 0; i < lastElement; i++)
+            {
+                this->callbacks[i](args...);
+            }
+            return this->callbacks[lastElement](args...);
         }
     };
 }
