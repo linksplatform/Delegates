@@ -1,6 +1,6 @@
 // Based on https://stackoverflow.com/a/23974539/710069
 
-#include "Delegate.h"
+#include "MulticastDelegate.h"
 using namespace Platform::Delegates;
 
 // ----------------------------------------------------------------------------
@@ -31,7 +31,7 @@ struct foo
 
 int main()
 {
-    Delegate<void(char const*)> d0;
+    MulticastDelegate<void(char const*)> d0;
 
     foo f0(0);
     foo f1(1);
