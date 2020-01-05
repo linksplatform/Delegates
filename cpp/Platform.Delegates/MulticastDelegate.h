@@ -87,9 +87,9 @@ namespace Platform::Delegates
             auto lastElement = callbacksSize - 1;
             for (size_t i = 0; i < lastElement; i++)
             {
-                this->callbacks[i](args...);
+                this->callbacks[i](std::forward<Args>(args)...);
             }
-            return this->callbacks[lastElement](args...);
+            return this->callbacks[lastElement](std::forward<Args>(args)...);
         }
     };
 }

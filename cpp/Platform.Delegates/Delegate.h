@@ -189,15 +189,15 @@ namespace Platform::Delegates
         {
             if (simpleFunction)
             {
-                return simpleFunction(args...);
+                return simpleFunction(std::forward<Args>(args)...);
             }
             else if (memberMethod)
             {
-                return (*memberMethod)(args...);
+                return (*memberMethod)(std::forward<Args>(args)...);
             }
             else if (complexFunction)
             {
-                return (*complexFunction)(args...);
+                return (*complexFunction)(std::forward<Args>(args)...);
             }
             else
             {
