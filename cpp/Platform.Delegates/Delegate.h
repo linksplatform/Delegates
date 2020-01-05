@@ -60,7 +60,7 @@ namespace Platform::Delegates
             virtual bool operator== (const MemberMethodBase& other) const override
             {
                 const MemberMethod* otherMethod = dynamic_cast<const MemberMethod*>(&other);
-                if (otherMethod == nullptr)
+                if (!otherMethod)
                 {
                     return false;
                 }
@@ -81,7 +81,7 @@ namespace Platform::Delegates
         static void* GetFunctionTarget(DelegateFunctionType& function)
         {
             DelegateRawFunctionType** functionPointer = function.template target<DelegateRawFunctionType*>();
-            if (functionPointer == nullptr)
+            if (!functionPointer)
             {
                 return nullptr;
             }
@@ -93,7 +93,7 @@ namespace Platform::Delegates
             auto leftTargetPointer = GetFunctionTarget(left);
             auto rightTargetPointer = GetFunctionTarget(right);
             // Only in the case we have two std::functions created using std::bind we have to use alternative way to compare functions
-            if (leftTargetPointer == nullptr && rightTargetPointer == nullptr)
+            if (!leftTargetPointer && !rightTargetPointer)
             {
                 return AreBoundFounctionsEqual(left, right);
             }
@@ -177,15 +177,15 @@ namespace Platform::Delegates
 
         virtual ReturnType operator()(Args... args)
         {
-            if (simpleFunction != nullptr)
+            if (simpleFunction)
             {
                 return simpleFunction(args...);
             }
-            else if (memberMethod != nullptr)
+            else if (memberMethod)
             {
                 return (*memberMethod)(args...);
             }
-            else if (complexFunction != nullptr)
+            else if (complexFunction)
             {
                 return (*complexFunction)(args...);
             }
@@ -197,15 +197,15 @@ namespace Platform::Delegates
 
         virtual bool operator== (const Delegate<ReturnType(Args...)>& other) const
         {
-            if (simpleFunction != nullptr)
+            if (simpleFunction)
             {
                 return simpleFunction == other.simpleFunction;
             }
-            else if (memberMethod != nullptr && other.memberMethod != nullptr)
+            else if (memberMethod && other.memberMethod)
             {
                 return *memberMethod == *other.memberMethod;
             }
-            else if (complexFunction != nullptr && other.complexFunction != nullptr)
+            else if (complexFunction && other.complexFunction)
             {
                 return AreFunctionsEqual(*complexFunction, *other.complexFunction);
             }
