@@ -38,24 +38,24 @@ namespace Platform::Delegates
 
         void operator=(const MulticastDelegate&) = delete;
 
-        MulticastDelegate<ReturnType(Args...)>& operator+= (const DelegateType&& callback)
+        MulticastDelegate<ReturnType(Args...)>& operator+= (const DelegateType& callback)
         {
             const std::lock_guard<std::mutex> lock(mutex);
             this->callbacks.emplace_back(callback);
             return *this;
         }
 
-        MulticastDelegate<ReturnType(Args...)>& operator+= (DelegateRawFunctionType&& callback)
+        MulticastDelegate<ReturnType(Args...)>& operator+= (const DelegateRawFunctionType& callback)
         {
             return *this += DelegateType(callback);
         }
 
-        MulticastDelegate<ReturnType(Args...)>& operator+= (DelegateFunctionType&& callback)
+        MulticastDelegate<ReturnType(Args...)>& operator+= (const DelegateFunctionType& callback)
         {
             return *this += DelegateType(callback);
         }
 
-        MulticastDelegate<ReturnType(Args...)>& operator-= (DelegateType&& callback)
+        MulticastDelegate<ReturnType(Args...)>& operator-= (const DelegateType& callback)
         {
             const std::lock_guard<std::mutex> lock(mutex);
             auto searchResult = std::find_if(this->callbacks.rbegin(), this->callbacks.rend(),
@@ -70,12 +70,12 @@ namespace Platform::Delegates
             return *this;
         }
 
-        MulticastDelegate<ReturnType(Args...)>& operator-= (DelegateRawFunctionType&& callback)
+        MulticastDelegate<ReturnType(Args...)>& operator-= (const DelegateRawFunctionType& callback)
         {
             return *this -= DelegateType(callback);
         }
 
-        MulticastDelegate<ReturnType(Args...)>& operator-= (DelegateFunctionType&& callback)
+        MulticastDelegate<ReturnType(Args...)>& operator-= (const DelegateFunctionType& callback)
         {
             return *this -= DelegateType(callback);
         }

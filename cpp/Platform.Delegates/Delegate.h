@@ -22,7 +22,7 @@ namespace Platform::Delegates
         }
 
         template <typename ReturnType, typename... Args>
-        static Delegate<ReturnType(Args...)> CreateDelegate(std::function<ReturnType(Args...)>&& function)
+        static Delegate<ReturnType(Args...)> CreateDelegate(const std::function<ReturnType(Args...)>& function)
         {
             return Delegate<ReturnType(Args...)>(function);
         }
@@ -32,6 +32,7 @@ namespace Platform::Delegates
     class Delegate<ReturnType(Args...)>
     {
         using DelegateRawFunctionType = ReturnType(Args...);
+        using DelegateType = Delegate<DelegateRawFunctionType>;
         using DelegateFunctionType = std::function<DelegateRawFunctionType>;
 
         class MemberMethodBase
@@ -159,16 +160,16 @@ namespace Platform::Delegates
 
         Delegate(MemberMethodBase* memberMethod) : memberMethod(std::shared_ptr<MemberMethodBase>(memberMethod)), simpleFunction(nullptr), complexFunction(nullptr) {}
 
-        Delegate(DelegateRawFunctionType& simpleFunction) : simpleFunction(simpleFunction), memberMethod(nullptr), complexFunction(nullptr) {}
+        Delegate(const DelegateRawFunctionType& simpleFunction) : simpleFunction(simpleFunction), memberMethod(nullptr), complexFunction(nullptr) {}
 
-        Delegate(DelegateFunctionType& complexFunction) : complexFunction(std::shared_ptr<DelegateFunctionType>(new DelegateFunctionType(complexFunction))), simpleFunction(nullptr), memberMethod(nullptr) {}
+        Delegate(const DelegateFunctionType& complexFunction) : complexFunction(std::shared_ptr<DelegateFunctionType>(new DelegateFunctionType(complexFunction))), simpleFunction(nullptr), memberMethod(nullptr) {}
 
         template <typename Class>
         Delegate(std::shared_ptr<Class> object, ReturnType(Class::* member)(Args...)) : Delegate(new MemberMethod(object, member)) { }
 
-        Delegate(const Delegate<ReturnType(Args...)>& other) : simpleFunction(other.simpleFunction), memberMethod(other.memberMethod), complexFunction(other.complexFunction) {}
+        Delegate(const DelegateType& other) : simpleFunction(other.simpleFunction), memberMethod(other.memberMethod), complexFunction(other.complexFunction) {}
 
-        void operator=(const Delegate<ReturnType(Args...)>& other)
+        void operator=(const DelegateType& other)
         {
             this->simpleFunction = other.simpleFunction;
             this->memberMethod = other.memberMethod;
@@ -195,7 +196,7 @@ namespace Platform::Delegates
             }
         }
 
-        virtual bool operator== (const Delegate<ReturnType(Args...)>& other) const
+        virtual bool operator== (const DelegateType& other) const
         {
             if (simpleFunction)
             {
@@ -215,7 +216,7 @@ namespace Platform::Delegates
             }
         }
 
-        virtual bool operator!= (const Delegate<ReturnType(Args...)>& other) const
+        virtual bool operator!= (const DelegateType& other) const
         {
             return !(*this == other);
         }
