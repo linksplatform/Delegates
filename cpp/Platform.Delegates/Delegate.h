@@ -16,7 +16,7 @@ namespace Platform::Delegates
     public:
 
         template <typename Class, typename ReturnType, typename... Args>
-        static Delegate<ReturnType(Args...)> CreateDelegate(Class& object, ReturnType(Class::* member)(Args...))
+        static Delegate<ReturnType(Args...)> CreateDelegate(std::shared_ptr<Class> object, ReturnType(Class::* member)(Args...))
         {
             return Delegate<ReturnType(Args...)>(object, member);
         }
@@ -45,16 +45,16 @@ namespace Platform::Delegates
         template <typename Class>
         class MemberMethod : public MemberMethodBase
         {
-            Class* object;
+            std::shared_ptr<Class> object;
             ReturnType(Class::* member)(Args...);
 
         public:
 
-            MemberMethod(Class* object, ReturnType(Class::* member)(Args...)) : object(object), member(member) { }
+            MemberMethod(std::shared_ptr<Class> object, ReturnType(Class::* member)(Args...)) : object(object), member(member) { }
 
             virtual ReturnType operator()(Args... args) override
             {
-                return (this->object->*this->member)(std::forward<Args>(args)...);
+                return (this->object.get()->*this->member)(std::forward<Args>(args)...);
             }
 
             virtual bool operator== (const MemberMethodBase& other) const override
@@ -164,7 +164,7 @@ namespace Platform::Delegates
         Delegate(DelegateFunctionType& complexFunction) : complexFunction(std::shared_ptr<DelegateFunctionType>(new DelegateFunctionType(complexFunction))), simpleFunction(nullptr), memberMethod(nullptr) {}
 
         template <typename Class>
-        Delegate(Class& object, ReturnType(Class::* member)(Args...)) : Delegate(new MemberMethod(&object, member)) { }
+        Delegate(std::shared_ptr<Class> object, ReturnType(Class::* member)(Args...)) : Delegate(new MemberMethod(object, member)) { }
 
         Delegate(const Delegate<ReturnType(Args...)>& other) : simpleFunction(other.simpleFunction), memberMethod(other.memberMethod), complexFunction(other.complexFunction) {}
 

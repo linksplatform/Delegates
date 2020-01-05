@@ -34,7 +34,7 @@ int main()
 {
     MulticastDelegate<void(char const*)> d0;
 
-    foo f0(0);
+    std::shared_ptr<foo> f0 = std::make_shared<foo>(0);
     foo f1(1);
 
     d0 += f;
@@ -52,5 +52,5 @@ int main()
     d0 -= std::bind(&foo::bar, &f1, std::placeholders::_1);
     d0("second call");
 
-    Delegate<>::CreateDelegate((std::function<void(char const*)>)std::bind(&foo::bar, &f0, std::placeholders::_1));
+    // Delegate<>::CreateDelegate((std::function<void(char const*)>)std::bind(&foo::bar, f0.get(), std::placeholders::_1));
 }
