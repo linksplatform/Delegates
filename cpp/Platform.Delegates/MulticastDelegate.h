@@ -2,10 +2,9 @@
 #ifndef PLATFORM_DELEGATES_MULTICASTDELEGATE
 #define PLATFORM_DELEGATES_MULTICASTDELEGATE
 
-// Based on https://stackoverflow.com/a/23974539/710069 and https://stackoverflow.com/a/35920804/710069
+// Based on https://stackoverflow.com/a/23974539/710069 
 
 #include <algorithm>
-#include <iostream>
 #include <vector>
 #include <functional>
 #include <thread>
@@ -21,8 +20,8 @@ namespace Platform::Delegates
     class MulticastDelegate<ReturnType(Args...)> : public Delegate<ReturnType(Args...)>
     {
         using DelegateRawFunctionType = ReturnType(Args...);
-        using DelegateType = Delegate<ReturnType(Args...)>;
-        using DelegateFunctionType = std::function<ReturnType(Args...)>;
+        using DelegateType = Delegate<DelegateRawFunctionType>;
+        using DelegateFunctionType = std::function<DelegateRawFunctionType>;
 
         std::vector<DelegateType> callbacks;
         std::mutex mutex;
@@ -48,13 +47,12 @@ namespace Platform::Delegates
 
         MulticastDelegate<ReturnType(Args...)>& operator+= (DelegateRawFunctionType&& callback)
         {
-            return *this += (DelegateType)callback;
+            return *this += DelegateType(callback);
         }
 
         MulticastDelegate<ReturnType(Args...)>& operator+= (DelegateFunctionType&& callback)
         {
-            //return *this += (DelegateType)callback;
-            return *this;
+            return *this += DelegateType(callback);
         }
 
         MulticastDelegate<ReturnType(Args...)>& operator-= (DelegateType&& callback)
@@ -74,13 +72,12 @@ namespace Platform::Delegates
 
         MulticastDelegate<ReturnType(Args...)>& operator-= (DelegateRawFunctionType&& callback)
         {
-            return *this -= (DelegateType)callback;
+            return *this -= DelegateType(callback);
         }
 
         MulticastDelegate<ReturnType(Args...)>& operator-= (DelegateFunctionType&& callback)
         {
-            //return *this -= DelegateType(callback);
-            return *this;
+            return *this -= DelegateType(callback);
         }
 
         virtual ReturnType operator()(Args... args) override

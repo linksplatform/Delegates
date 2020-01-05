@@ -1,5 +1,6 @@
 // Based on https://stackoverflow.com/a/23974539/710069
 
+#include "Delegate.h"
 #include "MulticastDelegate.h"
 using namespace Platform::Delegates;
 
@@ -41,9 +42,6 @@ int main()
     d0 += g;
     d0 += h;
 
-    Delegate<>::CreateDelegate(&f0, &foo::bar);
-    //Delegate<>::CreateDelegate((std::function<void(char const*)>)std::bind(&foo::bar, &f0, std::placeholders::_1));
-
     d0 += Delegate<>::CreateDelegate(&f0, &foo::bar);
     d0 += Delegate<>::CreateDelegate(&f0, &foo::cbs);
     d0 += std::bind(&foo::bar, &f1, std::placeholders::_1);
@@ -53,4 +51,6 @@ int main()
     d0 -= Delegate<>::CreateDelegate(&f0, &foo::cbs);
     d0 -= std::bind(&foo::bar, &f1, std::placeholders::_1);
     d0("second call");
+
+    Delegate<>::CreateDelegate((std::function<void(char const*)>)std::bind(&foo::bar, &f0, std::placeholders::_1));
 }

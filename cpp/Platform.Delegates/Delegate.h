@@ -2,7 +2,11 @@
 #ifndef PLATFORM_DELEGATES_DELEGATE
 #define PLATFORM_DELEGATES_DELEGATE
 
-// Based on https://stackoverflow.com/a/23974539/710069
+// Based on https://stackoverflow.com/a/23974539/710069 and https://stackoverflow.com/a/35920804/710069
+
+#include <algorithm>
+#include <iostream>
+#include <functional>
 
 namespace Platform::Delegates
 {
@@ -155,9 +159,9 @@ namespace Platform::Delegates
 
         Delegate(MemberMethodBase&& memberMethod) : memberMethod(&memberMethod), simpleFunction(nullptr), complexFunction(nullptr) {}
 
-        Delegate(DelegateRawFunctionType&& simpleFunction) : simpleFunction(simpleFunction), memberMethod(nullptr), complexFunction(nullptr) {}
+        Delegate(DelegateRawFunctionType& simpleFunction) : simpleFunction(simpleFunction), memberMethod(nullptr), complexFunction(nullptr) {}
 
-        Delegate(DelegateFunctionType&& complexFunction) : complexFunction(&complexFunction), simpleFunction(nullptr), memberMethod(nullptr) {}
+        Delegate(DelegateFunctionType& complexFunction) : complexFunction(&complexFunction), simpleFunction(nullptr), memberMethod(nullptr) {}
 
         template <typename Class>
         Delegate(Class* object, ReturnType(Class::* member)(Args...)) : Delegate(MemberMethod(object, member)) { }
