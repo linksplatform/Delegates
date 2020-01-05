@@ -31,7 +31,7 @@ namespace Platform::Delegates
 
         MulticastDelegate(const DelegateType& callback)
         {
-            this += callback;
+            *this += callback;
         }
 
         MulticastDelegate(const MulticastDelegate&) = delete;
