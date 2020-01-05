@@ -29,8 +29,39 @@ struct foo
 
 // ----------------------------------------------------------------------------
 
+void TestBindComparisonWithObjectPassedByValue()
+{
+    MulticastDelegate<void(char const*)> d0;
+
+    foo f1(1);
+
+    d0 += f;
+
+    d0 += std::bind(&foo::bar, f1, std::placeholders::_1);
+    d0("first call");
+    d0 -= std::bind(&foo::bar, f1, std::placeholders::_1);
+    d0("second call");
+}
+
+void TestBindComparisonWithObjectPassedByReference()
+{
+    MulticastDelegate<void(char const*)> d0;
+
+    foo f1(1);
+
+    d0 += f;
+
+    d0 += std::bind(&foo::bar, &f1, std::placeholders::_1);
+    d0("first call");
+    d0 -= std::bind(&foo::bar, &f1, std::placeholders::_1);
+    d0("second call");
+}
+
 int main()
 {
+    /*TestBindComparisonWithObjectPassedByValue();
+    TestBindComparisonWithObjectPassedByReference();*/
+
     MulticastDelegate<void(char const*)> d0;
 
     std::shared_ptr<foo> f0 = std::make_shared<foo>(0);

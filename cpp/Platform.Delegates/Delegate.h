@@ -108,23 +108,32 @@ namespace Platform::Delegates
             std::byte rightArray[size] = { {(std::byte)0} };
             new (&leftArray) DelegateFunctionType(left);
             new (&rightArray) DelegateFunctionType(right);
-            // PrintBytes(leftArray, rightArray, size);
+            //PrintBytes(leftArray, rightArray, size);
             ApplyHack(leftArray, rightArray, size);
             return std::equal(std::begin(leftArray), std::end(leftArray), std::begin(rightArray));
         }
 
+        // By resetting certain values we are able to compare functions correctly
+        // When values are reset it has the same effect as when these values are ignored
         static void ApplyHack(std::byte* leftArray, std::byte* rightArray, const size_t size)
         {
-            // Throw exception to prevent memory damage
-            if (size != 64)
+            if (size == 64) // x64 (64-bit) MSC 19.24.28314 for x64
             {
-                throw std::logic_error("Function comparison is not supported in your environment.");
+                ResetAt(leftArray, rightArray, 16);
+                ResetAt(leftArray, rightArray, 56);
+                ResetAt(leftArray, rightArray, 57);
             }
-            // By resetting certain values we are able to compare functions correctly
-            // When values are reset it has the same effect as when these values are ignored
-            ResetAt(leftArray, rightArray, 16);
-            ResetAt(leftArray, rightArray, 56);
-            ResetAt(leftArray, rightArray, 57);
+            else if (size == 40) // x86 (32-bit) MSC 19.24.28314 for x64
+            {
+                ResetAt(leftArray, rightArray, 8);
+                ResetAt(leftArray, rightArray, 16);
+                ResetAt(leftArray, rightArray, 36);
+            }
+            else
+            {
+                // Throw exception to prevent memory damage
+                throw std::logic_error("Comparison for function created using std::bind is not supported in your environment.");
+            }
         }
 
         static void ResetAt(std::byte* leftArray, std::byte* rightArray, const size_t i)
