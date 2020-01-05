@@ -150,21 +150,21 @@ namespace Platform::Delegates
         }
 
         DelegateRawFunctionType* simpleFunction;
-        DelegateFunctionType* complexFunction;
-        MemberMethodBase* memberMethod;
+        std::shared_ptr<DelegateFunctionType> complexFunction;
+        std::shared_ptr<MemberMethodBase> memberMethod;
 
     public:
 
         Delegate() : memberMethod(nullptr), simpleFunction(nullptr), complexFunction(nullptr) {}
 
-        Delegate(MemberMethodBase&& memberMethod) : memberMethod(&memberMethod), simpleFunction(nullptr), complexFunction(nullptr) {}
+        Delegate(MemberMethodBase* memberMethod) : memberMethod(std::shared_ptr<MemberMethodBase>(memberMethod)), simpleFunction(nullptr), complexFunction(nullptr) {}
 
         Delegate(DelegateRawFunctionType& simpleFunction) : simpleFunction(simpleFunction), memberMethod(nullptr), complexFunction(nullptr) {}
 
-        Delegate(DelegateFunctionType& complexFunction) : complexFunction(&complexFunction), simpleFunction(nullptr), memberMethod(nullptr) {}
+        Delegate(DelegateFunctionType& complexFunction) : complexFunction(std::shared_ptr<DelegateFunctionType>(new DelegateFunctionType(complexFunction))), simpleFunction(nullptr), memberMethod(nullptr) {}
 
         template <typename Class>
-        Delegate(Class* object, ReturnType(Class::* member)(Args...)) : Delegate(MemberMethod(object, member)) { }
+        Delegate(Class* object, ReturnType(Class::* member)(Args...)) : Delegate(new MemberMethod(object, member)) { }
 
         Delegate(const Delegate<ReturnType(Args...)>& other) : simpleFunction(other.simpleFunction), memberMethod(other.memberMethod), complexFunction(other.complexFunction) {}
 
