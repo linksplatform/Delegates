@@ -74,6 +74,10 @@ namespace Platform::Delegates
             }
         };
 
+        DelegateRawFunctionType* simpleFunction;
+        std::shared_ptr<DelegateFunctionType> complexFunction;
+        std::shared_ptr<MemberMethodBase> memberMethod;
+
         static void* GetFunctionTarget(DelegateFunctionType& function)
         {
             DelegateRawFunctionType** functionPointer = function.template target<DelegateRawFunctionType*>();
@@ -148,10 +152,6 @@ namespace Platform::Delegates
                 byte++;
             }
         }
-
-        DelegateRawFunctionType* simpleFunction;
-        std::shared_ptr<DelegateFunctionType> complexFunction;
-        std::shared_ptr<MemberMethodBase> memberMethod;
 
     public:
 
