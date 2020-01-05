@@ -58,11 +58,7 @@ namespace Platform::Delegates
         MulticastDelegate<ReturnType(Args...)>& operator-= (const DelegateType& callback)
         {
             const std::lock_guard<std::mutex> lock(mutex);
-            auto searchResult = std::find_if(this->callbacks.rbegin(), this->callbacks.rend(),
-                [&](DelegateType& other)
-                {
-                    return callback == other;
-                });
+            auto searchResult = std::find(this->callbacks.rbegin(), this->callbacks.rend(), callback);
             if (searchResult != this->callbacks.rend()) {
                 auto removedCallbackPosition = --(searchResult.base());
                 this->callbacks.erase(removedCallbackPosition);
