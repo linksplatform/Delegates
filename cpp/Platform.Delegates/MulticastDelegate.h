@@ -113,13 +113,14 @@ namespace Platform::Delegates
 
         void operator=(const MulticastDelegate&) = delete;
 
-        void operator+= (const DelegateFunctionType&& callback)
+        MulticastDelegate<ReturnType(Args...)>& operator+= (const DelegateFunctionType&& callback)
         {
             const std::lock_guard<std::mutex> lock(mutex);
             this->callbacks.emplace_back(callback);
+            return *this;
         }
 
-        void operator-= (DelegateFunctionType&& callback)
+        MulticastDelegate<ReturnType(Args...)>& operator-= (DelegateFunctionType&& callback)
         {
             const std::lock_guard<std::mutex> lock(mutex);
             auto searchResult = std::find_if(this->callbacks.rbegin(), this->callbacks.rend(),
@@ -131,6 +132,7 @@ namespace Platform::Delegates
                 auto removedCallbackPosition = --(searchResult.base());
                 this->callbacks.erase(removedCallbackPosition);
             }
+            return *this;
         }
 
         ReturnType operator()(Args... args)
