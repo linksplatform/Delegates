@@ -16,7 +16,7 @@ namespace Platform::Delegates
     public:
 
         template <typename Class, typename ReturnType, typename... Args>
-        static Delegate<ReturnType(Args...)> CreateDelegate(Class* object, ReturnType(Class::* member)(Args...))
+        static Delegate<ReturnType(Args...)> CreateDelegate(Class& object, ReturnType(Class::* member)(Args...))
         {
             return Delegate<ReturnType(Args...)>(object, member);
         }
@@ -164,7 +164,7 @@ namespace Platform::Delegates
         Delegate(DelegateFunctionType& complexFunction) : complexFunction(std::shared_ptr<DelegateFunctionType>(new DelegateFunctionType(complexFunction))), simpleFunction(nullptr), memberMethod(nullptr) {}
 
         template <typename Class>
-        Delegate(Class* object, ReturnType(Class::* member)(Args...)) : Delegate(new MemberMethod(object, member)) { }
+        Delegate(Class& object, ReturnType(Class::* member)(Args...)) : Delegate(new MemberMethod(&object, member)) { }
 
         Delegate(const Delegate<ReturnType(Args...)>& other) : simpleFunction(other.simpleFunction), memberMethod(other.memberMethod), complexFunction(other.complexFunction) {}
 
