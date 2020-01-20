@@ -1,0 +1,20 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup MSBuild.exe
+      uses: warrenbuckley/Setup-MSBuild@v1
+    - name: Setup VSTest.Console.exe
+      uses: malcolmnixon/Setup-VSTest@master
+      
+    - name: Build
+      run: msbuild cpp/Platform.Delegates.Tests.Console/Platform.Delegates.Tests.Console.vcxproj
+    - name: Test
+      run: dir
