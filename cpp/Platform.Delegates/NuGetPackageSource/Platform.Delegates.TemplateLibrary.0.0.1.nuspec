@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Platform.Delegates.TemplateLibrary</id>
+    <title>LinksPlatform's Platform.Delegates Template Library</title>
+    <summary>LinksPlatform's Platform.Delegates is a Template Library what contains abstract class templates.</summary>
+    <description>LinksPlatform's Platform.Delegates is a Template Library what contains set of C++ abstract class templates. Use Platform.Delegates.h file to include the library.</description>
+    <releaseNotes>Initial release.</releaseNotes>
+    <version>0.0.1</version>
+    <authors>Konstantin Diachenko</authors>
+    <owners>Konstantin Diachenko</owners>
+    <copyright>Konstantin Diachenko</copyright>
+    <projectUrl>https://linksplatform.github.io/Delegates</projectUrl>
+    <repository type="git" url="https://github.com/linksplatform/Delegates" />
+    <iconUrl>https://raw.githubusercontent.com/linksplatform/Documentation/18469f4d033ee9a5b7b84caab9c585acab2ac519/doc/Avatar-rainbow-icon-64x64.png</iconUrl>
+    <tags>C++ Native Delegates</tags>
+    <license type="expression">MIT</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+  </metadata>
+  <files>
+    <file src="build\native\Platform.Delegates.TemplateLibrary.targets" target="build\native\Platform.Delegates.TemplateLibrary.targets" />
+    <file src="lib\native\include\Platform.Delegates.h" target="lib\native\include\Platform.Delegates.h" />
+    <file src="lib\native\include\Platform.Delegate.h" target="lib\native\include\Platform.Delegate.h" />
+    <file src="lib\native\include\Platform.MulticastDelegate.h" target="lib\native\include\Platform.MulticastDelegate.h" />
+  </files>
+</package>

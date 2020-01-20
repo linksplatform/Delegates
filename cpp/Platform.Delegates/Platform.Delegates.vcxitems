@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Delegate.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Delegates.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MulticastDelegate.h" />
   </ItemGroup>
 </Project>
