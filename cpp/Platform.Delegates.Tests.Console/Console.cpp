@@ -1,6 +1,6 @@
 // Based on https://stackoverflow.com/a/23974539/710069
 
-#include "MulticastDelegate.h"
+#include "Platform.Delegates.h"
 using namespace Platform::Delegates;
 
 // ----------------------------------------------------------------------------

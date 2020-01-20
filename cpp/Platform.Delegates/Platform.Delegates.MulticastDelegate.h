@@ -9,7 +9,7 @@
 #include <functional>
 #include <thread>
 #include <mutex>
-#include "Delegate.h"
+#include "Platform.Delegates.Delegate.h"
 
 namespace Platform::Delegates
 {

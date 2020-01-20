@@ -20,7 +20,7 @@
   <files>
     <file src="build\native\Platform.Delegates.TemplateLibrary.targets" target="build\native\Platform.Delegates.TemplateLibrary.targets" />
     <file src="lib\native\include\Platform.Delegates.h" target="lib\native\include\Platform.Delegates.h" />
-    <file src="lib\native\include\Platform.Delegate.h" target="lib\native\include\Platform.Delegate.h" />
-    <file src="lib\native\include\Platform.MulticastDelegate.h" target="lib\native\include\Platform.MulticastDelegate.h" />
+    <file src="lib\native\include\Platform.Delegates.Delegate.h" target="lib\native\include\Platform.Delegates.Delegate.h" />
+    <file src="lib\native\include\Platform.Delegates.MulticastDelegate.h" target="lib\native\include\Platform.Delegates.MulticastDelegate.h" />
   </files>
 </package>
