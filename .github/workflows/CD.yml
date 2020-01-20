@@ -11,10 +11,8 @@ jobs:
     - uses: actions/checkout@v1
     - name: Setup MSBuild.exe
       uses: warrenbuckley/Setup-MSBuild@v1
-    - name: Setup VSTest.Console.exe
-      uses: malcolmnixon/Setup-VSTest@master
       
     - name: Build
-      run: msbuild cpp/Platform.Delegates.Tests.Console/Platform.Delegates.Tests.Console.vcxproj
+      run: msbuild cpp/Platform.Delegates.Tests.Console/Platform.Delegates.Tests.Console.vcxproj -property:Configuration=Release
     - name: Test
-      run: dir
+      run: Release/Platform.Delegates.Tests.Console.exe
