@@ -15,4 +15,4 @@ jobs:
     - name: Build
       run: msbuild Platform.Delegates.sln -property:Configuration=Release
     - name: Test
-      run: Release/Platform.Delegates.Tests.Console.exe
+      run: x64\Release\Platform.Delegates.Tests.Console.exe
