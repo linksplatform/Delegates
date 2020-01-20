@@ -1,9 +1,18 @@
-name: CI
+name: CD
 
-on: [push]
+on:
+  push:
+    branches: master
+  pull_request:
+    branches: master
+
+env:
+  NUGETTOKEN: ${{ secrets.NUGET_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  SCRIPTS_BASE_URL: https://raw.githubusercontent.com/linksplatform/Scripts/master/MultiProjectRepository
 
 jobs:
-  build:
+  buildAndTest:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v1
@@ -13,3 +22,16 @@ jobs:
       run: msbuild Platform.Delegates.sln -property:Configuration=Release
     - name: Test
       run: x64\Release\Platform.Delegates.Tests.Console.exe
+  
+  deploy:
+    needs: buildAndTest
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Publish Cpp NuGet package
+      if: github.event_name == 'push'
+      run: |
+        export REPOSITORY_NAME=$(basename ${{ github.repository }})
+        wget "$SCRIPTS_BASE_URL/push-cpp-nuget.sh"
+        bash ./push-cpp-nuget.sh
