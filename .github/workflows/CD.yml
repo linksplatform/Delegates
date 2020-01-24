@@ -23,7 +23,7 @@ jobs:
     - name: NuGet packages restore
       run: nuget restore Platform.Delegates.sln
     - name: Build
-      run: msbuild Platform.Delegates.sln /p:Configuration=Release /p:Platform=x64 /t:build /restore
+      run: msbuild Platform.Delegates.sln /p:Configuration=Release /p:Platform=x64 /p:RestorePackagesPath=packages /t:build /restore
     - name: Test
       run: x64\Release\Platform.Delegates.Tests.Console.exe
   
