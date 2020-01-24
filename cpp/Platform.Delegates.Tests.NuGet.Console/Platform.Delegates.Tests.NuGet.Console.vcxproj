@@ -151,19 +151,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ClCompile Include="..\Platform.Delegates.Tests.Console\Console.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Platform.Delegates.Tests.Console\Console.cpp" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\..\..\..\Other\corertHelloWorld\Platform.Delegates.TemplateLibrary.0.0.1\build\native\Platform.Delegates.TemplateLibrary.targets" Condition="Exists('..\..\..\..\Other\corertHelloWorld\Platform.Delegates.TemplateLibrary.0.0.1\build\native\Platform.Delegates.TemplateLibrary.targets')" />
+    <Import Project="..\..\packages\Platform.Delegates.TemplateLibrary.0.0.1\build\native\Platform.Delegates.TemplateLibrary.targets" Condition="Exists('..\..\packages\Platform.Delegates.TemplateLibrary.0.0.1\build\native\Platform.Delegates.TemplateLibrary.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\..\..\Other\corertHelloWorld\Platform.Delegates.TemplateLibrary.0.0.1\build\native\Platform.Delegates.TemplateLibrary.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\Other\corertHelloWorld\Platform.Delegates.TemplateLibrary.0.0.1\build\native\Platform.Delegates.TemplateLibrary.targets'))" />
+    <Error Condition="!Exists('..\..\packages\Platform.Delegates.TemplateLibrary.0.0.1\build\native\Platform.Delegates.TemplateLibrary.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Platform.Delegates.TemplateLibrary.0.0.1\build\native\Platform.Delegates.TemplateLibrary.targets'))" />
   </Target>
 </Project>

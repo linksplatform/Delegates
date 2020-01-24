@@ -9,6 +9,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Platform.Delegates.Tests.Co
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Platform.Delegates.Tests.NuGet.Console", "cpp\Platform.Delegates.Tests.NuGet.Console\Platform.Delegates.Tests.NuGet.Console.vcxproj", "{BC9C7BD8-91DB-4490-8DBF-274522B95660}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{80F27506-4740-4FE2-8694-C0A0D240715A}"
+	ProjectSection(SolutionItems) = preProject
+		NuGet.Config = NuGet.Config
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
