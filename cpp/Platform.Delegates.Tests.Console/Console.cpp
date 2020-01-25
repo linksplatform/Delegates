@@ -31,11 +31,9 @@ struct foo
 
 void TestBindComparisonWithObjectPassedByValue()
 {
-    MulticastDelegate<void(char const*)> d0;
+    MulticastDelegate<void(char const*)> d0 = f;
 
     foo f1(1);
-
-    d0 += f;
 
     d0 += std::bind(&foo::bar, f1, std::placeholders::_1);
     d0("first call");
@@ -45,11 +43,9 @@ void TestBindComparisonWithObjectPassedByValue()
 
 void TestBindComparisonWithObjectPassedByReference()
 {
-    MulticastDelegate<void(char const*)> d0;
+    MulticastDelegate<void(char const*)> d0 = f;
 
     foo f1(1);
-
-    d0 += f;
 
     d0 += std::bind(&foo::bar, &f1, std::placeholders::_1);
     d0("first call");
@@ -62,12 +58,11 @@ int main()
     /*TestBindComparisonWithObjectPassedByValue();
     TestBindComparisonWithObjectPassedByReference();*/
 
-    MulticastDelegate<void(char const*)> d0;
+    MulticastDelegate<void(char const*)> d0 = f;
 
     std::shared_ptr<foo> f0 = std::make_shared<foo>(0);
     foo f1(1);
 
-    d0 += f;
     d0 += g;
     d0 += g;
     d0 += h;
@@ -84,3 +79,16 @@ int main()
 
     // Delegate<>::CreateDelegate((std::function<void(char const*)>)std::bind(&foo::bar, f0.get(), std::placeholders::_1));
 }
+
+
+// Test case for Platform.Exceptions project
+class IgnoredExceptions
+{
+    public: static void RaiseExceptionIgnoredEvent(const std::exception& exception) { ExceptionIgnored(NULL, exception); }
+
+    private: static void OnExceptionIgnored(void* sender, const std::exception& exception)
+    {
+    }
+
+    public: static inline MulticastDelegate<void(void*, const std::exception&)> ExceptionIgnored = IgnoredExceptions::OnExceptionIgnored;
+};
