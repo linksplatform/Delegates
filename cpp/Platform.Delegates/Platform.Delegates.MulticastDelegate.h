@@ -34,6 +34,16 @@ namespace Platform::Delegates
             *this += callback;
         }
 
+        MulticastDelegate(const DelegateRawFunctionType& callback)
+        {
+            *this += DelegateType(callback);
+        }
+
+        MulticastDelegate(const DelegateFunctionType& callback)
+        {
+            *this += DelegateType(callback);
+        }
+
         MulticastDelegate(const MulticastDelegate&) = delete;
 
         void operator=(const MulticastDelegate&) = delete;
