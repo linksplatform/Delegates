@@ -90,5 +90,5 @@ class IgnoredExceptions
     {
     }
 
-    public: static inline MulticastDelegate<void(void*, const std::exception&)> ExceptionIgnored = IgnoredExceptions::OnExceptionIgnored;
+    public: static inline MulticastDelegate<void(void*, const std::exception&)> ExceptionIgnored = OnExceptionIgnored;
 };
