@@ -34,7 +34,7 @@ namespace Platform::Delegates
             *this += callback;
         }
 
-        MulticastDelegate(const DelegateRawFunctionType& callback)
+        MulticastDelegate(DelegateRawFunctionType& callback)
         {
             *this += DelegateType(callback);
         }
@@ -55,7 +55,7 @@ namespace Platform::Delegates
             return *this;
         }
 
-        MulticastDelegate<ReturnType(Args...)>& operator+= (const DelegateRawFunctionType& callback)
+        MulticastDelegate<ReturnType(Args...)>& operator+= (DelegateRawFunctionType& callback)
         {
             return *this += DelegateType(callback);
         }
@@ -76,7 +76,7 @@ namespace Platform::Delegates
             return *this;
         }
 
-        MulticastDelegate<ReturnType(Args...)>& operator-= (const DelegateRawFunctionType& callback)
+        MulticastDelegate<ReturnType(Args...)>& operator-= (DelegateRawFunctionType& callback)
         {
             return *this -= DelegateType(callback);
         }

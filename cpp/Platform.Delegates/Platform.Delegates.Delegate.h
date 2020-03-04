@@ -169,7 +169,7 @@ namespace Platform::Delegates
 
         Delegate(MemberMethodBase* memberMethod) : memberMethod(std::shared_ptr<MemberMethodBase>(memberMethod)), simpleFunction(nullptr), complexFunction(nullptr) {}
 
-        Delegate(const DelegateRawFunctionType& simpleFunction) : simpleFunction(simpleFunction), memberMethod(nullptr), complexFunction(nullptr) {}
+        Delegate(DelegateRawFunctionType& simpleFunction) : simpleFunction(simpleFunction), memberMethod(nullptr), complexFunction(nullptr) {}
 
         Delegate(const DelegateFunctionType& complexFunction) : complexFunction(std::shared_ptr<DelegateFunctionType>(new DelegateFunctionType(complexFunction))), simpleFunction(nullptr), memberMethod(nullptr) {}
 
