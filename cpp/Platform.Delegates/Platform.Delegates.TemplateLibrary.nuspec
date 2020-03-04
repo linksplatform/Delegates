@@ -5,8 +5,9 @@
     <title>LinksPlatform's Platform.Delegates Template Library</title>
     <summary>LinksPlatform's Platform.Delegates is a Template Library what contains abstract class templates.</summary>
     <description>LinksPlatform's Platform.Delegates is a Template Library what contains set of C++ abstract class templates. Use Platform.Delegates.h file to include the library.</description>
-    <releaseNotes>Direct initialization of MulticastDelegate with simple function pointer and std::function enabled.</releaseNotes>
-    <version>0.0.2</version>
+    <releaseNotes>Warnings fix.
+NuGet package file structure changed.</releaseNotes>
+    <version>0.0.3</version>
     <authors>Konstantin Diachenko</authors>
     <owners>Konstantin Diachenko</owners>
     <copyright>Konstantin Diachenko</copyright>
@@ -15,12 +16,12 @@
     <iconUrl>https://raw.githubusercontent.com/linksplatform/Documentation/18469f4d033ee9a5b7b84caab9c585acab2ac519/doc/Avatar-rainbow-icon-64x64.png</iconUrl>
     <tags>C++ Native Delegates</tags>
     <license type="expression">MIT</license>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
   </metadata>
   <files>
-    <file src="build\native\Platform.Delegates.TemplateLibrary.targets" target="build\native\Platform.Delegates.TemplateLibrary.targets" />
-    <file src="lib\native\include\Platform.Delegates.h" target="lib\native\include\Platform.Delegates.h" />
-    <file src="lib\native\include\Platform.Delegates.Delegate.h" target="lib\native\include\Platform.Delegates.Delegate.h" />
-    <file src="lib\native\include\Platform.Delegates.MulticastDelegate.h" target="lib\native\include\Platform.Delegates.MulticastDelegate.h" />
+    <file src="Platform.Delegates.TemplateLibrary.targets" target="build\native\Platform.Delegates.TemplateLibrary.targets" />
+    <file src="Platform.Delegates.h" target="lib\native\include\Platform.Delegates.h" />
+    <file src="Platform.Delegates.Delegate.h" target="lib\native\include\Platform.Delegates.Delegate.h" />
+    <file src="Platform.Delegates.MulticastDelegate.h" target="lib\native\include\Platform.Delegates.MulticastDelegate.h" />
   </files>
 </package>
