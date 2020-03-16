@@ -1,4 +1,5 @@
 #pragma once
+
 #ifndef PLATFORM_DELEGATES_DELEGATE
 #define PLATFORM_DELEGATES_DELEGATE
 
