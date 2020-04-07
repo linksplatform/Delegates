@@ -69,11 +69,6 @@ namespace Platform::Delegates
             CopyCallbacks(multicastDelegate);
         }
 
-        void operator=(const MulticastDelegate &multicastDelegate) noexcept
-        {
-            CopyCallbacks(multicastDelegate);
-        }
-
         MulticastDelegate<ReturnType(Args...)> &operator+=(const DelegateType &callback)
         {
             const std::lock_guard<std::mutex> lock(mutex);
