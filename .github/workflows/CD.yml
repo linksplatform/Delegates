@@ -25,7 +25,7 @@ jobs:
     - name: Build
       run: msbuild Platform.Delegates.sln /p:Configuration=Test /p:Platform=x64
     - name: Test
-      run: x64\Release\Platform.Delegates.Tests.Console.exe
+      run: x64\Test\Platform.Delegates.Tests.Console.exe
   
   deploy:
     needs: buildAndTest
