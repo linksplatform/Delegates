@@ -60,6 +60,8 @@ int main()
 
     MulticastDelegate<void(char const*)> d0 = f;
 
+    d0 = f; // value is reset here
+
     std::shared_ptr<foo> f0 = std::make_shared<foo>(0);
     foo f1(1);
 

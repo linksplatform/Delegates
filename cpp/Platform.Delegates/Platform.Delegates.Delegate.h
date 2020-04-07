@@ -17,13 +17,13 @@ namespace Platform::Delegates
     public:
 
         template <typename Class, typename ReturnType, typename... Args>
-        static Delegate<ReturnType(Args...)> CreateDelegate(std::shared_ptr<Class> object, ReturnType(Class::* member)(Args...))
+        static Delegate<ReturnType(Args...)> CreateDelegate(std::shared_ptr<Class> object, ReturnType(Class:: *member)(Args...))
         {
             return Delegate<ReturnType(Args...)>(object, member);
         }
 
         template <typename ReturnType, typename... Args>
-        static Delegate<ReturnType(Args...)> CreateDelegate(const std::function<ReturnType(Args...)>& function)
+        static Delegate<ReturnType(Args...)> CreateDelegate(const std::function<ReturnType(Args...)> &function)
         {
             return Delegate<ReturnType(Args...)>(function);
         }
@@ -40,28 +40,28 @@ namespace Platform::Delegates
         {
         public:
             virtual ReturnType operator()(Args... args) = 0;
-            virtual bool operator== (const MemberMethodBase& other) const = 0;
-            virtual bool operator!= (const MemberMethodBase& other) const = 0;
+            virtual bool operator== (const MemberMethodBase &other) const = 0;
+            virtual bool operator!= (const MemberMethodBase &other) const = 0;
         };
 
         template <typename Class>
         class MemberMethod : public MemberMethodBase
         {
             std::shared_ptr<Class> object;
-            ReturnType(Class::* member)(Args...);
+            ReturnType(Class:: *member)(Args...);
 
         public:
 
-            MemberMethod(std::shared_ptr<Class> object, ReturnType(Class::* member)(Args...)) : object(object), member(member) { }
+            MemberMethod(std::shared_ptr<Class> object, ReturnType(Class:: *member)(Args...)) : object(object), member(member) { }
 
             virtual ReturnType operator()(Args... args) override
             {
                 return (this->object.get()->*this->member)(std::forward<Args>(args)...);
             }
 
-            virtual bool operator== (const MemberMethodBase& other) const override
+            virtual bool operator== (const MemberMethodBase &other) const override
             {
-                const MemberMethod* otherMethod = dynamic_cast<const MemberMethod*>(&other);
+                const MemberMethod *otherMethod = dynamic_cast<const MemberMethod *>(&other);
                 if (!otherMethod)
                 {
                     return false;
@@ -70,19 +70,19 @@ namespace Platform::Delegates
                     && this->member == otherMethod->member;
             }
 
-            virtual bool operator!= (const MemberMethodBase& other) const override
+            virtual bool operator!= (const MemberMethodBase &other) const override
             {
                 return !(*this == other);
             }
         };
 
-        DelegateRawFunctionType* simpleFunction;
+        DelegateRawFunctionType *simpleFunction;
         std::shared_ptr<DelegateFunctionType> complexFunction;
         std::shared_ptr<MemberMethodBase> memberMethod;
 
-        static void* GetFunctionTarget(DelegateFunctionType& function)
+        static void *GetFunctionTarget(DelegateFunctionType &function)
         {
-            DelegateRawFunctionType** functionPointer = function.template target<DelegateRawFunctionType*>();
+            DelegateRawFunctionType **functionPointer = function.template target<DelegateRawFunctionType *>();
             if (!functionPointer)
             {
                 return nullptr;
@@ -90,7 +90,7 @@ namespace Platform::Delegates
             return *functionPointer;
         }
 
-        static bool AreFunctionsEqual(DelegateFunctionType& left, DelegateFunctionType& right)
+        static bool AreFunctionsEqual(DelegateFunctionType &left, DelegateFunctionType &right)
         {
             auto leftTargetPointer = GetFunctionTarget(left);
             auto rightTargetPointer = GetFunctionTarget(right);
@@ -102,7 +102,7 @@ namespace Platform::Delegates
             return leftTargetPointer == rightTargetPointer;
         }
 
-        static bool AreBoundFounctionsEqual(const DelegateFunctionType& left, const DelegateFunctionType& right)
+        static bool AreBoundFounctionsEqual(const DelegateFunctionType &left, const DelegateFunctionType &right)
         {
             const size_t size = sizeof(DelegateFunctionType);
             std::byte leftArray[size] = { {(std::byte)0} };
@@ -116,7 +116,7 @@ namespace Platform::Delegates
 
         // By resetting certain values we are able to compare functions correctly
         // When values are reset it has the same effect as when these values are ignored
-        static void ApplyHack(std::byte* leftArray, std::byte* rightArray, const size_t size)
+        static void ApplyHack(std::byte *leftArray, std::byte *rightArray, const size_t size)
         {
             if (size == 64) // x64 (64-bit) MSC 19.24.28314 for x64
             {
@@ -137,13 +137,13 @@ namespace Platform::Delegates
             }
         }
 
-        static void ResetAt(std::byte* leftArray, std::byte* rightArray, const size_t i)
+        static void ResetAt(std::byte *leftArray, std::byte *rightArray, const size_t i)
         {
             leftArray[i] = (std::byte)0;
             rightArray[i] = (std::byte)0;
         }
 
-        static void PrintBytes(std::byte* leftFirstByte, std::byte* rightFirstByte, const size_t size)
+        static void PrintBytes(std::byte *leftFirstByte, std::byte *rightFirstByte, const size_t size)
         {
             std::cout << "Left: " << std::endl;
             PrintBytes(leftFirstByte, size);
@@ -151,10 +151,10 @@ namespace Platform::Delegates
             PrintBytes(rightFirstByte, size);
         }
 
-        static void PrintBytes(std::byte* firstByte, const size_t size)
+        static void PrintBytes(std::byte *firstByte, const size_t size)
         {
-            const std::byte* limitByte = firstByte + size;
-            std::byte* byte = firstByte;
+            const std::byte *limitByte = firstByte + size;
+            std::byte *byte = firstByte;
             size_t i = 0;
             while (byte != limitByte)
             {
@@ -168,18 +168,18 @@ namespace Platform::Delegates
 
         Delegate() : memberMethod(nullptr), simpleFunction(nullptr), complexFunction(nullptr) {}
 
-        Delegate(MemberMethodBase* memberMethod) : memberMethod(std::shared_ptr<MemberMethodBase>(memberMethod)), simpleFunction(nullptr), complexFunction(nullptr) {}
+        Delegate(MemberMethodBase *memberMethod) : memberMethod(std::shared_ptr<MemberMethodBase>(memberMethod)), simpleFunction(nullptr), complexFunction(nullptr) {}
 
-        Delegate(DelegateRawFunctionType& simpleFunction) : simpleFunction(simpleFunction), memberMethod(nullptr), complexFunction(nullptr) {}
+        Delegate(DelegateRawFunctionType &simpleFunction) : simpleFunction(simpleFunction), memberMethod(nullptr), complexFunction(nullptr) {}
 
-        Delegate(const DelegateFunctionType& complexFunction) : complexFunction(std::shared_ptr<DelegateFunctionType>(new DelegateFunctionType(complexFunction))), simpleFunction(nullptr), memberMethod(nullptr) {}
+        Delegate(const DelegateFunctionType &complexFunction) : complexFunction(std::shared_ptr<DelegateFunctionType>(new DelegateFunctionType(complexFunction))), simpleFunction(nullptr), memberMethod(nullptr) {}
 
         template <typename Class>
-        Delegate(std::shared_ptr<Class> object, ReturnType(Class::* member)(Args...)) : Delegate(new MemberMethod(object, member)) { }
+        Delegate(std::shared_ptr<Class> object, ReturnType(Class:: *member)(Args...)) : Delegate(new MemberMethod(object, member)) { }
 
-        Delegate(const DelegateType& other) : simpleFunction(other.simpleFunction), memberMethod(other.memberMethod), complexFunction(other.complexFunction) {}
+        Delegate(const DelegateType &other) : simpleFunction(other.simpleFunction), memberMethod(other.memberMethod), complexFunction(other.complexFunction) {}
 
-        void operator=(const DelegateType& other)
+        void operator=(const DelegateType &other)
         {
             this->simpleFunction = other.simpleFunction;
             this->memberMethod = other.memberMethod;
@@ -206,7 +206,7 @@ namespace Platform::Delegates
             }
         }
 
-        virtual bool operator== (const DelegateType& other) const
+        virtual bool operator== (const DelegateType &other) const
         {
             if (simpleFunction)
             {
@@ -226,7 +226,7 @@ namespace Platform::Delegates
             }
         }
 
-        virtual bool operator!= (const DelegateType& other) const
+        virtual bool operator!= (const DelegateType &other) const
         {
             return !(*this == other);
         }
