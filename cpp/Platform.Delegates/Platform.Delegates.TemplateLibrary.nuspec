@@ -5,8 +5,8 @@
     <title>LinksPlatform's Platform.Delegates Template Library</title>
     <summary>LinksPlatform's Platform.Delegates is a Template Library what contains abstract class templates.</summary>
     <description>LinksPlatform's Platform.Delegates is a Template Library what contains set of C++ abstract class templates. Use Platform.Delegates.h file to include the library.</description>
-    <releaseNotes>CopyCallbacks method is private now.</releaseNotes>
-    <version>0.0.6</version>
+    <releaseNotes>Better support for deadlock avoidance.</releaseNotes>
+    <version>0.0.7</version>
     <authors>Konstantin Diachenko</authors>
     <owners>Konstantin Diachenko</owners>
     <copyright>Konstantin Diachenko</copyright>
