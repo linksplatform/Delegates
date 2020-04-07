@@ -24,10 +24,10 @@ namespace Platform::Delegates
         using DelegateType = Delegate<DelegateRawFunctionType>;
         using DelegateFunctionType = std::function<DelegateRawFunctionType>;
 
+        mutable std::mutex mutex;
         std::vector<DelegateType> callbacks;
-        std::mutex mutex;
 
-        void CopyCallbacks(MulticastDelegate &other)
+        void CopyCallbacks(const MulticastDelegate &other)
         {
             std::scoped_lock lock(mutex, other.mutex);
             callbacks = std::vector<DelegateType>(other.callbacks);
@@ -51,12 +51,12 @@ namespace Platform::Delegates
             *this += DelegateType(callback);
         }
 
-        MulticastDelegate(MulticastDelegate &multicastDelegate)
+        MulticastDelegate(const MulticastDelegate &multicastDelegate)
         {
             CopyCallbacks(multicastDelegate);
         }
 
-        void operator=(MulticastDelegate &&other) noexcept
+        void operator=(const MulticastDelegate &other) noexcept
         {
             if (this == &other)
             {
