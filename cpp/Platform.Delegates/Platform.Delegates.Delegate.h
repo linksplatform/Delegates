@@ -206,9 +206,9 @@ namespace Platform::Delegates
             }
         }
 
-        virtual bool operator== (const DelegateType &other) const
+        virtual bool operator==(const DelegateType &other) const
         {
-            if (simpleFunction)
+            if (simpleFunction && other.simpleFunction)
             {
                 return simpleFunction == other.simpleFunction;
             }
@@ -226,7 +226,7 @@ namespace Platform::Delegates
             }
         }
 
-        virtual bool operator!= (const DelegateType &other) const
+        virtual bool operator!=(const DelegateType &other) const
         {
             return !(*this == other);
         }

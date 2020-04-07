@@ -27,6 +27,13 @@ namespace Platform::Delegates
         std::vector<DelegateType> callbacks;
         std::mutex mutex;
 
+        void CopyCallbacks(MulticastDelegate &multicastDelegate)
+        {
+            const std::lock_guard<std::mutex> thisLock(mutex);
+            const std::lock_guard<std::mutex> otherLock(multicastDelegate.mutex);
+            callbacks = std::vector<DelegateType>(multicastDelegate.callbacks);
+        }
+
     public:
         MulticastDelegate() {}
 
@@ -50,36 +57,29 @@ namespace Platform::Delegates
             CopyCallbacks(multicastDelegate);
         }
 
-        void operator=(MulticastDelegate &&multicastDelegate)
+        void operator=(MulticastDelegate &&multicastDelegate) noexcept
         {
             CopyCallbacks(multicastDelegate);
         }
 
-        void CopyCallbacks(MulticastDelegate &multicastDelegate)
-        {
-            const std::lock_guard<std::mutex> thisLock(mutex);
-            const std::lock_guard<std::mutex> otherLock(multicastDelegate.mutex);
-            callbacks = std::vector<DelegateType>(multicastDelegate.callbacks);
-        }
-
-        MulticastDelegate<ReturnType(Args...)> &operator+= (const DelegateType &callback)
+        MulticastDelegate<ReturnType(Args...)> &operator+=(const DelegateType &callback)
         {
             const std::lock_guard<std::mutex> lock(mutex);
             this->callbacks.emplace_back(callback);
             return *this;
         }
 
-        MulticastDelegate<ReturnType(Args...)> &operator+= (DelegateRawFunctionType &callback)
+        MulticastDelegate<ReturnType(Args...)> &operator+=(DelegateRawFunctionType &callback)
         {
             return *this += DelegateType(callback);
         }
 
-        MulticastDelegate<ReturnType(Args...)> &operator+= (const DelegateFunctionType &callback)
+        MulticastDelegate<ReturnType(Args...)> &operator+=(const DelegateFunctionType &callback)
         {
             return *this += DelegateType(callback);
         }
 
-        MulticastDelegate<ReturnType(Args...)> &operator-= (const DelegateType &callback)
+        MulticastDelegate<ReturnType(Args...)> &operator-=(const DelegateType &callback)
         {
             const std::lock_guard<std::mutex> lock(mutex);
             auto searchResult = std::find(this->callbacks.rbegin(), this->callbacks.rend(), callback);
@@ -90,12 +90,12 @@ namespace Platform::Delegates
             return *this;
         }
 
-        MulticastDelegate<ReturnType(Args...)> &operator-= (DelegateRawFunctionType &callback)
+        MulticastDelegate<ReturnType(Args...)> &operator-=(DelegateRawFunctionType &callback)
         {
             return *this -= DelegateType(callback);
         }
 
-        MulticastDelegate<ReturnType(Args...)> &operator-= (const DelegateFunctionType &callback)
+        MulticastDelegate<ReturnType(Args...)> &operator-=(const DelegateFunctionType &callback)
         {
             return *this -= DelegateType(callback);
         }
