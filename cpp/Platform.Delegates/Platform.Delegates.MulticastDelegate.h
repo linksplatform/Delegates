@@ -29,9 +29,16 @@ namespace Platform::Delegates
 
         void CopyCallbacks(MulticastDelegate &multicastDelegate)
         {
-            const std::lock_guard<std::mutex> thisLock(mutex);
-            const std::lock_guard<std::mutex> otherLock(multicastDelegate.mutex);
-            callbacks = std::vector<DelegateType>(multicastDelegate.callbacks);
+            if (&mutex == &multicastDelegate.mutex)
+            {
+                std::lock_guard lock(mutex);
+                callbacks = std::vector<DelegateType>(multicastDelegate.callbacks);
+            }
+            else
+            {
+                std::scoped_lock lock(mutex, multicastDelegate.mutex);
+                callbacks = std::vector<DelegateType>(multicastDelegate.callbacks);
+            }
         }
 
     public:
@@ -58,6 +65,11 @@ namespace Platform::Delegates
         }
 
         void operator=(MulticastDelegate &&multicastDelegate) noexcept
+        {
+            CopyCallbacks(multicastDelegate);
+        }
+
+        void operator=(const MulticastDelegate &multicastDelegate) noexcept
         {
             CopyCallbacks(multicastDelegate);
         }
