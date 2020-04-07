@@ -56,13 +56,14 @@ namespace Platform::Delegates
             CopyCallbacks(multicastDelegate);
         }
 
-        void operator=(const MulticastDelegate &other) noexcept
+        MulticastDelegate &operator=(const MulticastDelegate &other) noexcept
         {
             if (this == &other)
             {
-                return;
+                return *this;
             }
             CopyCallbacks(other);
+            return *this;
         }
 
         MulticastDelegate<ReturnType(Args...)> &operator+=(const DelegateType &callback)
