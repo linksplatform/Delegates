@@ -179,11 +179,15 @@ namespace Platform::Delegates
 
         Delegate(const DelegateType &other) : simpleFunction(other.simpleFunction), memberMethod(other.memberMethod), complexFunction(other.complexFunction) {}
 
-        void operator=(const DelegateType &other)
+        DelegateType &operator=(const DelegateType &other)
         {
-            this->simpleFunction = other.simpleFunction;
-            this->memberMethod = other.memberMethod;
-            this->complexFunction = other.complexFunction;
+            if (this != &other)
+            {
+                this->simpleFunction = other.simpleFunction;
+                this->memberMethod = other.memberMethod;
+                this->complexFunction = other.complexFunction;
+            }
+            return *this;
         }
 
         virtual ReturnType operator()(Args... args)

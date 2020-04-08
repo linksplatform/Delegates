@@ -59,8 +59,13 @@ int main()
     TestBindComparisonWithObjectPassedByReference();*/
 
     MulticastDelegate<void(char const*)> d0 = f;
+    MulticastDelegate<void(char const *)> d1 = f;
 
     d0 = d0 = d0;
+    d0 = d1;
+    d1 = d0;
+    d0 = std::move(d1);
+    d0 = std::move(f);
     d0 = f; // value is reset here
 
     std::shared_ptr<foo> f0 = std::make_shared<foo>(0);

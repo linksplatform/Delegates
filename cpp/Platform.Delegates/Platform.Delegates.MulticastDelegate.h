@@ -27,10 +27,32 @@ namespace Platform::Delegates
         mutable std::mutex mutex;
         std::vector<DelegateType> callbacks;
 
+        void MoveCallbacks(MulticastDelegate &other)
+        {
+            callbacks = std::move(other.callbacks);
+        }
+
         void CopyCallbacks(const MulticastDelegate &other)
         {
-            std::scoped_lock lock(mutex, other.mutex);
-            callbacks = std::vector<DelegateType>(other.callbacks);
+            callbacks = other.callbacks;
+        }
+
+        void CopyCallbacksSync(const MulticastDelegate &other)
+        {
+            // To prevent the deadlock the order of locking should be the same for all threads.
+            // We can use the addresses of MulticastDelegates to sort the mutexes. 
+            if (this < &other)
+            {
+                std::lock_guard lock1(mutex);
+                std::lock_guard lock2(other.mutex);
+                CopyCallbacks(other);
+            }
+            else
+            {
+                std::lock_guard lock1(other.mutex);
+                std::lock_guard lock2(mutex);
+                CopyCallbacks(other);
+            }
         }
 
     public:
@@ -53,16 +75,29 @@ namespace Platform::Delegates
 
         MulticastDelegate(const MulticastDelegate &multicastDelegate)
         {
-            CopyCallbacks(multicastDelegate);
+            CopyCallbacksSync(multicastDelegate);
+        }
+
+        MulticastDelegate(const MulticastDelegate &&multicastDelegate)
+        {
+            MoveCallbacks(multicastDelegate);
         }
 
         MulticastDelegate &operator=(const MulticastDelegate &other) noexcept
         {
-            if (this == &other)
+            if (this != &other)
             {
-                return *this;
+                CopyCallbacksSync(other);
             }
-            CopyCallbacks(other);
+            return *this;
+        }
+
+        MulticastDelegate &operator=(MulticastDelegate &&other) noexcept
+        {
+            if (this != &other)
+            {
+                MoveCallbacks(other);
+            }
             return *this;
         }
 
