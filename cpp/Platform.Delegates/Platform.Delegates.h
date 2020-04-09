@@ -4,6 +4,7 @@
 #define PLATFORM_DELEGATES
 
 #include "Platform.Delegates.Delegate.h"
+#include "Platform.Delegates.CreateDelegate.h"
 #include "Platform.Delegates.MulticastDelegate.h"
 
 #endif

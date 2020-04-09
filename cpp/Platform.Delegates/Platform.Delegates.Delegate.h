@@ -5,35 +5,18 @@
 
 // Based on https://stackoverflow.com/a/23974539/710069 and https://stackoverflow.com/a/35920804/710069
 
-#include <algorithm>
 #include <iostream>
 #include <functional>
 
 namespace Platform::Delegates
 {
     template <typename...>
-    class Delegate
-    {
-    public:
-
-        template <typename Class, typename ReturnType, typename... Args>
-        static Delegate<ReturnType(Args...)> CreateDelegate(std::shared_ptr<Class> object, ReturnType(Class:: *member)(Args...))
-        {
-            return Delegate<ReturnType(Args...)>(object, member);
-        }
-
-        template <typename ReturnType, typename... Args>
-        static Delegate<ReturnType(Args...)> CreateDelegate(const std::function<ReturnType(Args...)> &function)
-        {
-            return Delegate<ReturnType(Args...)>(function);
-        }
-    };
+    class Delegate;
 
     template <typename ReturnType, typename... Args>
     class Delegate<ReturnType(Args...)>
     {
         using DelegateRawFunctionType = ReturnType(Args...);
-        using DelegateType = Delegate<DelegateRawFunctionType>;
         using DelegateFunctionType = std::function<DelegateRawFunctionType>;
 
         class MemberMethodBase
@@ -177,9 +160,9 @@ namespace Platform::Delegates
         template <typename Class>
         Delegate(std::shared_ptr<Class> object, ReturnType(Class:: *member)(Args...)) : Delegate(new MemberMethod(object, member)) { }
 
-        Delegate(const DelegateType &other) : simpleFunction(other.simpleFunction), memberMethod(other.memberMethod), complexFunction(other.complexFunction) {}
+        Delegate(const Delegate &other) : simpleFunction(other.simpleFunction), memberMethod(other.memberMethod), complexFunction(other.complexFunction) {}
 
-        DelegateType &operator=(const DelegateType &other)
+        Delegate &operator=(const Delegate &other)
         {
             if (this != &other)
             {
@@ -210,7 +193,7 @@ namespace Platform::Delegates
             }
         }
 
-        virtual bool operator==(const DelegateType &other) const
+        virtual bool operator==(const Delegate &other) const
         {
             if (simpleFunction && other.simpleFunction)
             {
@@ -230,7 +213,7 @@ namespace Platform::Delegates
             }
         }
 
-        virtual bool operator!=(const DelegateType &other) const
+        virtual bool operator!=(const Delegate &other) const
         {
             return !(*this == other);
         }
