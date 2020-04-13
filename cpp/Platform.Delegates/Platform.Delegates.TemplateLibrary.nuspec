@@ -5,14 +5,8 @@
     <title>LinksPlatform's Platform.Delegates Template Library</title>
     <summary>LinksPlatform's Platform.Delegates is a Template Library what contains abstract class templates.</summary>
     <description>LinksPlatform's Platform.Delegates is a Template Library what contains set of C++ abstract class templates. Use Platform.Delegates.h file to include the library.</description>
-    <releaseNotes>Delegate&lt;&gt; class CreateDelegate methods moved directly to Platform.Delegates namespace.
-Added assignment operator overloads for possible input types to simplify convertation from lambdas with better type inference.
-Refactoring:
-* no need to repeat type parameters in the template's type name),
-* private method renamed,
-* include directives uptimized to allow inclusion of any single header file,
-* code format fix.</releaseNotes>
-    <version>0.0.13</version>
+    <releaseNotes>Missing file added.</releaseNotes>
+    <version>0.0.14</version>
     <authors>Konstantin Diachenko</authors>
     <owners>Konstantin Diachenko</owners>
     <copyright>Konstantin Diachenko</copyright>
@@ -30,6 +24,7 @@ Refactoring:
     <file src="icon.png" target="images/icon.png" />
     <file src="Platform.Delegates.TemplateLibrary.targets" target="build\native\Platform.Delegates.TemplateLibrary.targets" />
     <file src="Platform.Delegates.h" target="lib\native\include\Platform.Delegates.h" />
+    <file src="Platform.Delegates.CreateDelegate.h" target="lib\native\include\Platform.Delegates.CreateDelegate.h" />
     <file src="Platform.Delegates.Delegate.h" target="lib\native\include\Platform.Delegates.Delegate.h" />
     <file src="Platform.Delegates.MulticastDelegate.h" target="lib\native\include\Platform.Delegates.MulticastDelegate.h" />
   </files>
