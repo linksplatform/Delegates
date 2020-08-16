@@ -1,11 +1,10 @@
-#pragma once
-
-#ifndef PLATFORM_DELEGATES_MULTICASTDELEGATE
-#define PLATFORM_DELEGATES_MULTICASTDELEGATE
+#ifndef PLATFORM_DELEGATES_MULTICASTDELEGATE_H
+#define PLATFORM_DELEGATES_MULTICASTDELEGATE_H
 
 // Based on https://stackoverflow.com/a/23974539/710069 
 
 #include <mutex>
+#include <list>
 #include "Platform.Delegates.Delegate.h"
 
 namespace Platform::Delegates
@@ -16,14 +15,131 @@ namespace Platform::Delegates
     template <typename ReturnType, typename... Args>
     class MulticastDelegate<ReturnType(Args...)> : public Delegate<ReturnType(Args...)>
     {
+    public:
         using DelegateRawFunctionType = ReturnType(Args...);
         using DelegateType = Delegate<DelegateRawFunctionType>;
         using DelegateFunctionType = std::function<DelegateRawFunctionType>;
 
-        mutable std::mutex mutex;
-        std::vector<DelegateType> callbacks;
+        constexpr MulticastDelegate() noexcept = default;
 
-        void MoveCallbacksUnsync(MulticastDelegate &other)
+        MulticastDelegate(const MulticastDelegate &multicastDelegate)
+        {
+            CopyCallbacks(multicastDelegate);
+        }
+
+        MulticastDelegate(MulticastDelegate &&multicastDelegate)
+        {
+            MoveCallbacksUnsync(std::move(multicastDelegate));
+        }
+
+        MulticastDelegate(const DelegateType &callback)
+        {
+            *this += callback;
+        }
+
+        MulticastDelegate(DelegateRawFunctionType callback)
+        {
+            *this += callback;
+        }
+
+        MulticastDelegate(const DelegateFunctionType &callback)
+        {
+            *this += callback;
+        }
+
+        MulticastDelegate &operator=(const MulticastDelegate &other)
+        {
+            if (this != &other)
+            {
+                CopyCallbacks(other);
+            }
+            return *this;
+        }
+
+        MulticastDelegate &operator=(MulticastDelegate &&other) noexcept
+        {
+            if (this != &other)
+            {
+                MoveCallbacksUnsync(std::move(other));
+            }
+            return *this;
+        }
+
+        MulticastDelegate &operator=(const DelegateType &other)
+        {
+            ClearCallbacks();
+            *this += other;
+            return *this;
+        }
+
+        MulticastDelegate &operator=(DelegateRawFunctionType other)
+        {
+            ClearCallbacks();
+            *this += other;
+            return *this;
+        }
+
+        MulticastDelegate &operator=(const DelegateFunctionType &other)
+        {
+            ClearCallbacks();
+            *this += other;
+            return *this;
+        }
+
+        MulticastDelegate &operator+=(const DelegateType &callback)
+        {
+            std::lock_guard lock(mutex);
+            this->callbacks.emplace_back(callback);
+            return *this;
+        }
+
+        MulticastDelegate &operator+=(DelegateRawFunctionType callback)
+        {
+            return *this += DelegateType{callback};
+        }
+
+        MulticastDelegate &operator+=(const DelegateFunctionType &callback)
+        {
+            return *this += DelegateType{callback};
+        }
+
+        MulticastDelegate &operator-=(const DelegateType &callback)
+        {
+            const std::lock_guard lock{mutex};
+            auto searchResult = std::find(this->callbacks.rbegin(), this->callbacks.rend(), callback);
+            if (searchResult != this->callbacks.rend()) {
+                this->callbacks.erase(searchResult.base());
+            }
+            return *this;
+        }
+
+        MulticastDelegate &operator-=(DelegateRawFunctionType &callback)
+        {
+            return *this -= DelegateType{callback};
+        }
+
+        MulticastDelegate &operator-=(const DelegateFunctionType &callback)
+        {
+            return *this -= DelegateType{callback};
+        }
+
+        virtual ReturnType operator()(Args... args) override
+        {
+            const std::lock_guard lock(mutex);
+            if (this->callbacks.size() == 0)
+            {
+                throw std::bad_function_call();
+            }
+            for (auto callbackIt = this->callbacks.rbegin();
+                    callbackIt != std::prev(this->callbacks.rend());
+                    ++callbackIt)
+            {
+                (*callbackIt)(args...);
+            }
+            return this->callbacks.front()(args...);
+        }
+    private:
+        void MoveCallbacksUnsync(MulticastDelegate &&other)
         {
             callbacks = std::move(other.callbacks);
         }
@@ -35,8 +151,13 @@ namespace Platform::Delegates
 
         void CopyCallbacks(const MulticastDelegate &other)
         {
+            if (this == &other)
+            {
+                return;
+            }
+
             // To prevent the deadlock the order of locking should be the same for all threads.
-            // We can use the addresses of MulticastDelegates to sort the mutexes. 
+            // We can use the addresses of MulticastDelegates to sort the mutexes.
             if (this < &other)
             {
                 std::lock_guard lock1(mutex);
@@ -57,126 +178,8 @@ namespace Platform::Delegates
             callbacks.clear();
         }
 
-    public:
-        MulticastDelegate() {}
-
-        MulticastDelegate(const DelegateType &callback)
-        {
-            *this += callback;
-        }
-
-        MulticastDelegate(DelegateRawFunctionType &callback)
-        {
-            *this += callback;
-        }
-
-        MulticastDelegate(const DelegateFunctionType &callback)
-        {
-            *this += callback;
-        }
-
-        MulticastDelegate(const MulticastDelegate &multicastDelegate)
-        {
-            CopyCallbacks(multicastDelegate);
-        }
-
-        MulticastDelegate(const MulticastDelegate &&multicastDelegate)
-        {
-            MoveCallbacksUnsync(multicastDelegate);
-        }
-
-        MulticastDelegate &operator=(const MulticastDelegate &other) noexcept
-        {
-            if (this != &other)
-            {
-                CopyCallbacks(other);
-            }
-            return *this;
-        }
-
-        MulticastDelegate &operator=(MulticastDelegate &&other) noexcept
-        {
-            if (this != &other)
-            {
-                MoveCallbacksUnsync(other);
-            }
-            return *this;
-        }
-
-        MulticastDelegate &operator=(const DelegateType &other) noexcept
-        {
-            ClearCallbacks();
-            *this += other;
-            return *this;
-        }
-
-        MulticastDelegate &operator=(DelegateRawFunctionType &other) noexcept
-        {
-            ClearCallbacks();
-            *this += other;
-            return *this;
-        }
-
-        MulticastDelegate &operator=(const DelegateFunctionType &other) noexcept
-        {
-            ClearCallbacks();
-            *this += other;
-            return *this;
-        }
-
-        MulticastDelegate &operator+=(const DelegateType &callback)
-        {
-            const std::lock_guard<std::mutex> lock(mutex);
-            this->callbacks.emplace_back(callback);
-            return *this;
-        }
-
-        MulticastDelegate &operator+=(DelegateRawFunctionType &callback)
-        {
-            return *this += DelegateType(callback);
-        }
-
-        MulticastDelegate &operator+=(const DelegateFunctionType &callback)
-        {
-            return *this += DelegateType(callback);
-        }
-
-        MulticastDelegate &operator-=(const DelegateType &callback)
-        {
-            const std::lock_guard<std::mutex> lock(mutex);
-            auto searchResult = std::find(this->callbacks.rbegin(), this->callbacks.rend(), callback);
-            if (searchResult != this->callbacks.rend()) {
-                auto removedCallbackPosition = --(searchResult.base());
-                this->callbacks.erase(removedCallbackPosition);
-            }
-            return *this;
-        }
-
-        MulticastDelegate &operator-=(DelegateRawFunctionType &callback)
-        {
-            return *this -= DelegateType(callback);
-        }
-
-        MulticastDelegate &operator-=(const DelegateFunctionType &callback)
-        {
-            return *this -= DelegateType(callback);
-        }
-
-        virtual ReturnType operator()(Args... args) override
-        {
-            const std::lock_guard<std::mutex> lock(mutex);
-            auto callbacksSize = this->callbacks.size();
-            if (callbacksSize == 0)
-            {
-                throw std::bad_function_call();
-            }
-            auto lastElement = callbacksSize - 1;
-            for (size_t i = 0; i < lastElement; i++)
-            {
-                this->callbacks[i](std::forward<Args>(args)...);
-            }
-            return this->callbacks[lastElement](std::forward<Args>(args)...);
-        }
+        mutable std::mutex mutex;
+        std::list<DelegateType> callbacks;
     };
 }
 
