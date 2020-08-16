@@ -123,7 +123,7 @@ namespace Platform::Delegates
             return *this -= DelegateType{callback};
         }
 
-        virtual ReturnType operator()(Args... args) override
+        ReturnType operator()(Args... args) override
         {
             const std::lock_guard lock(mutex);
             if (this->callbacks.size() == 0)
