@@ -175,6 +175,8 @@ namespace Platform::Delegates
             return std::equal(std::begin(leftArray), std::end(leftArray), std::begin(rightArray));
         }
 
+        // By resetting certain values we are able to compare functions correctly
+        // When values are reset it has the same effect as when these values are ignored
         template<size_t size>
         static void ApplyHack(std::byte *leftArray, std::byte *rightArray)
         {
