@@ -17,9 +17,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Setup MSBuild.exe
-      uses: warrenbuckley/Setup-MSBuild@v1
+      uses: microsoft/setup-msbuild@v1
     - name: Setup Nuget.exe
-      uses: warrenbuckley/Setup-Nuget@v1
+      uses: nuget/setup-nuget@v1
     - name: NuGet packages restore
       run: nuget restore Platform.Delegates.sln
     - name: Build
