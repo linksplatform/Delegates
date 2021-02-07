@@ -1,2 +1,2 @@
 # Delegates
-LinksPlatform's Platform.Delegates Class Library
+LinksPlatform's Platform.Delegates Template Class Library
