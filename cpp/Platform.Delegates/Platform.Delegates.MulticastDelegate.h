@@ -107,7 +107,8 @@ namespace Platform::Delegates
         {
             const std::lock_guard lock{mutex};
             auto searchResult = std::find(this->callbacks.rbegin(), this->callbacks.rend(), callback);
-            if (searchResult != this->callbacks.rend()) {
+            if (searchResult != this->callbacks.rend())
+            {
                 this->callbacks.erase(searchResult.base());
             }
             return *this;
@@ -138,6 +139,7 @@ namespace Platform::Delegates
             }
             return this->callbacks.front()(args...);
         }
+
     private:
         void MoveCallbacksUnsync(MulticastDelegate &&other)
         {
