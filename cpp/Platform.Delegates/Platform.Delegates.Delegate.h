@@ -96,6 +96,7 @@ namespace Platform::Delegates
         {
             return !(*this == other);
         }
+
     private:
         class MemberMethodBase
         {
@@ -133,6 +134,7 @@ namespace Platform::Delegates
             {
                 return !(*this == other);
             }
+
         private:
             std::shared_ptr<Class> object;
             ReturnType(Class:: *method)(Args...);
