@@ -132,8 +132,8 @@ namespace Platform::Delegates
                 throw std::bad_function_call();
             }
             for (auto callbackIt = this->callbacks.rbegin();
-                    callbackIt != std::prev(this->callbacks.rend());
-                    ++callbackIt)
+                 callbackIt != std::prev(this->callbacks.rend());
+                 ++callbackIt)
             {
                 (*callbackIt)(args...);
             }
@@ -157,7 +157,6 @@ namespace Platform::Delegates
             {
                 return;
             }
-
             // To prevent the deadlock the order of locking should be the same for all threads.
             // We can use the addresses of MulticastDelegates to sort the mutexes.
             if (this < &other)
