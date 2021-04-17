@@ -25,10 +25,10 @@ namespace Platform::Delegates
         Delegate(Delegate&&) noexcept = default;
 
         constexpr Delegate(DelegateRawFunctionType simpleFunction) noexcept
-            : simpleFunction(simpleFunction) {}
+            : simpleFunction(simpleFunction) { }
 
         Delegate(const DelegateFunctionType &complexFunction)
-            : complexFunction(std::make_shared<DelegateFunctionType>(complexFunction)) {}
+            : complexFunction(std::make_shared<DelegateFunctionType>(complexFunction)) { }
 
         template <typename Class>
         Delegate(std::shared_ptr<Class> object, ReturnType(Class:: *member)(Args...))
@@ -141,7 +141,7 @@ namespace Platform::Delegates
         };
 
         Delegate(std::shared_ptr<MemberMethodBase> memberMethod) noexcept
-            : memberMethod(std::move(memberMethod)) {}
+            : memberMethod(std::move(memberMethod)) { }
 
         static DelegateRawFunctionType *GetFunctionTarget(DelegateFunctionType &function) noexcept
         {
