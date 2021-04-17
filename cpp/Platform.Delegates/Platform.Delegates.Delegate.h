@@ -119,7 +119,7 @@ namespace Platform::Delegates
                 return (*object.*method)(args...);
             }
 
-            bool operator== (const MemberMethodBase &other) const override
+            bool operator==(const MemberMethodBase &other) const override
             {
                 const MemberMethod *otherMethod = dynamic_cast<const MemberMethod *>(&other);
                 if (!otherMethod)
@@ -130,7 +130,7 @@ namespace Platform::Delegates
                     && this->method == otherMethod->method;
             }
 
-            bool operator!= (const MemberMethodBase &other) const override
+            bool operator!=(const MemberMethodBase &other) const override
             {
                 return !(*this == other);
             }
