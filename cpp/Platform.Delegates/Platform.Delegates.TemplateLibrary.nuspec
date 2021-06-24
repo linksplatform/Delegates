@@ -5,8 +5,8 @@
     <title>LinksPlatform's Platform.Delegates Template Library</title>
     <summary>LinksPlatform's Platform.Delegates is a Template Library what contains abstract class templates.</summary>
     <description>LinksPlatform's Platform.Delegates is a Template Library what contains set of C++ abstract class templates. Use Platform.Delegates.h file to include the library.</description>
-    <releaseNotes>Missing file added.</releaseNotes>
-    <version>0.0.14</version>
+    <releaseNotes>Fix fields ordering and big refactoring. Replace static with inline, and some cosmetic fixes.</releaseNotes>
+    <version>0.0.15</version>
     <authors>Konstantin Diachenko</authors>
     <owners>Konstantin Diachenko</owners>
     <copyright>Konstantin Diachenko</copyright>
