@@ -55,9 +55,6 @@ void TestBindComparisonWithObjectPassedByReference()
 
 int main()
 {
-    /*TestBindComparisonWithObjectPassedByValue();
-    TestBindComparisonWithObjectPassedByReference();*/
-
     MulticastDelegate<void(const char *)> d0 = f;
     MulticastDelegate<void(const char *)> d1 = f;
 
