@@ -169,8 +169,8 @@ namespace Platform::Delegates
         static bool AreBoundFunctionsEqual(const DelegateFunctionType &left, const DelegateFunctionType &right)
         {
             constexpr size_t size = sizeof(DelegateFunctionType);
-            std::byte leftArray[size] = { {(std::byte)0} };
-            std::byte rightArray[size] = { {(std::byte)0} };
+            std::byte leftArray[size] = {(std::byte)0};
+            std::byte rightArray[size] = {(std::byte)0};
             new (&leftArray) DelegateFunctionType(left);
             new (&rightArray) DelegateFunctionType(right);
             //PrintBytes(leftArray, rightArray, size);
