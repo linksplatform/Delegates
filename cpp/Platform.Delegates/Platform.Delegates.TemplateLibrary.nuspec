@@ -9,7 +9,7 @@
 Use Delegate constructor with deductions guides instead CreateDelegate function.     
 First release version for conan.
 </releaseNotes>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <authors>konard, poul250, uselessgoddess</authors>
     <owners>konard, poul250, uselessgoddess</owners>
     <copyright>konard, poul250, uselessgoddess</copyright>
