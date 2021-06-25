@@ -201,14 +201,6 @@ namespace Platform::Delegates
             }
         }
 
-    public:
-        constexpr static bool AppliedHack()
-        {
-            constexpr auto size = sizeof(DelegateFunctionType);
-            return size == 40 || size == 64;
-        }
-
-    private:
         static void ResetAt(std::byte *leftArray, std::byte *rightArray, const size_t i)
         {
             leftArray[i] = (std::byte)0;
