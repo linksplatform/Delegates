@@ -26,14 +26,14 @@ namespace Platform::Delegates
         Delegate(Delegate&&) noexcept = default;
 
         constexpr Delegate(DelegateRawFunctionType simpleFunction) noexcept
-                : simpleFunction(simpleFunction) {}
+            : simpleFunction(simpleFunction) { }
 
         Delegate(const DelegateFunctionType &complexFunction)
-                : complexFunction(std::make_shared<DelegateFunctionType>(complexFunction)) {}
+            : complexFunction(std::make_shared<DelegateFunctionType>(complexFunction)) { }
 
         template <typename Class>
         Delegate(std::shared_ptr<Class> object, ReturnType(Class:: *member)(Args...))
-                : Delegate(std::make_shared<MemberMethod<Class>>(std::move(object), member)) { }
+            : Delegate(std::make_shared<MemberMethod<Class>>(std::move(object), member)) { }
 
         virtual ~Delegate() = default;
 
@@ -97,6 +97,7 @@ namespace Platform::Delegates
         {
             return !(*this == other);
         }
+
     private:
         class MemberMethodBase
         {
@@ -119,7 +120,7 @@ namespace Platform::Delegates
                 return (*object.*method)(args...);
             }
 
-            bool operator== (const MemberMethodBase &other) const override
+            bool operator==(const MemberMethodBase &other) const override
             {
                 const MemberMethod *otherMethod = dynamic_cast<const MemberMethod *>(&other);
                 if (!otherMethod)
@@ -130,17 +131,18 @@ namespace Platform::Delegates
                     && this->method == otherMethod->method;
             }
 
-            bool operator!= (const MemberMethodBase &other) const override
+            bool operator!=(const MemberMethodBase &other) const override
             {
                 return !(*this == other);
             }
+
         private:
             std::shared_ptr<Class> object;
             ReturnType(Class:: *method)(Args...);
         };
 
         Delegate(std::shared_ptr<MemberMethodBase> memberMethod) noexcept
-                : memberMethod(std::move(memberMethod)) {}
+            : memberMethod(std::move(memberMethod)) { }
 
         static DelegateRawFunctionType *GetFunctionTarget(DelegateFunctionType &function) noexcept
         {
