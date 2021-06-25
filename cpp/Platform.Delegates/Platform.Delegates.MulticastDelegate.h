@@ -27,7 +27,7 @@ namespace Platform::Delegates
             CopyCallbacks(multicastDelegate);
         }
 
-        MulticastDelegate(MulticastDelegate &&multicastDelegate)
+        MulticastDelegate(MulticastDelegate &&multicastDelegate) noexcept
         {
             MoveCallbacksUnsync(std::move(multicastDelegate));
         }

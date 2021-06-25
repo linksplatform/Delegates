@@ -1,6 +1,6 @@
 // Based on https://stackoverflow.com/a/23974539/710069
 
-#include "Platform.Delegates.h"
+#include <Platform.Delegates.h>
 using namespace Platform::Delegates;
 
 // ----------------------------------------------------------------------------
@@ -79,17 +79,15 @@ int main()
     d0 += g;
     d0 += h;
 
-    d0 += CreateDelegate(f0, &foo::bar);
-    d0 += CreateDelegate(f0, &foo::cbs);
+    d0 += Delegate(f0, &foo::bar);
+    d0 += Delegate(f0, &foo::cbs);
     d0 += std::bind(&foo::bar, &f1, std::placeholders::_1);
     d0 += std::bind(&foo::cbs, &f1, std::placeholders::_1);
     d0("first call");
     d0 -= g;
-    d0 -= CreateDelegate(f0, &foo::cbs);
+    d0 -= Delegate(f0, &foo::cbs);
     d0 -= std::bind(&foo::bar, &f1, std::placeholders::_1);
     d0("second call");
-
-    // Delegate<>::CreateDelegate((std::function<void(const char*)>)std::bind(&foo::bar, f0.get(), std::placeholders::_1));
 }
 
 
