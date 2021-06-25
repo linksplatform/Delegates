@@ -6,22 +6,13 @@
 namespace Platform::Delegates
 {
     template <typename ReturnType, typename... Args>
-    inline Delegate<ReturnType(Args...)> CreateDelegate(ReturnType(&function)(Args...))
-    {
-        return Delegate<ReturnType(Args...)>{function};
-    }
+    Delegate(ReturnType(function)(Args...)) -> Delegate<ReturnType(Args...)>;
 
     template <typename ReturnType, typename... Args>
-    inline Delegate<ReturnType(Args...)> CreateDelegate(const std::function<ReturnType(Args...)> &function)
-    {
-        return Delegate<ReturnType(Args...)>{function};
-    }
+    Delegate(std::function<ReturnType(Args...)> function) -> Delegate<ReturnType(Args...)>;
 
     template <typename Class, typename ReturnType, typename... Args>
-    inline Delegate<ReturnType(Args...)> CreateDelegate(std::shared_ptr<Class> object, ReturnType(Class:: *member)(Args...))
-    {
-        return Delegate<ReturnType(Args...)>{object, member};
-    }
+    Delegate(std::shared_ptr<Class> object, ReturnType(Class:: *member)(Args...)) -> Delegate<ReturnType(Args...)>;
 }
 
 #endif

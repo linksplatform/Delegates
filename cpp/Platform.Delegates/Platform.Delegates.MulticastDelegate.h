@@ -27,7 +27,7 @@ namespace Platform::Delegates
             CopyCallbacks(multicastDelegate);
         }
 
-        MulticastDelegate(MulticastDelegate &&multicastDelegate)
+        MulticastDelegate(MulticastDelegate &&multicastDelegate) noexcept
         {
             MoveCallbacksUnsync(std::move(multicastDelegate));
         }
@@ -105,6 +105,12 @@ namespace Platform::Delegates
 
         MulticastDelegate &operator-=(const DelegateType &callback)
         {
+            using base = Delegate<DelegateRawFunctionType>;
+
+            if constexpr (not EnableDelegateSubtraction<MulticastDelegate>) {
+                static_assert(base::AppliedHack(), "Comparison for function created using std::bind is not supported in your environment.");
+            }
+
             const std::lock_guard lock{mutex};
             auto searchResult = std::find(this->callbacks.rbegin(), this->callbacks.rend(), callback);
             if (searchResult != this->callbacks.rend()) {

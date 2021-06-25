@@ -3,6 +3,7 @@
 
 // Based on https://stackoverflow.com/a/23974539/710069 and https://stackoverflow.com/a/35920804/710069
 
+#include <memory>
 #include <iostream>
 #include <functional>
 
@@ -158,12 +159,12 @@ namespace Platform::Delegates
             // Only in the case we have two std::functions created using std::bind we have to use alternative way to compare functions
             if (!leftTargetPointer && !rightTargetPointer)
             {
-                return AreBoundFounctionsEqual(left, right);
+                return AreBoundFunctionsEqual(left, right);
             }
             return leftTargetPointer == rightTargetPointer;
         }
 
-        static bool AreBoundFounctionsEqual(const DelegateFunctionType &left, const DelegateFunctionType &right)
+        static bool AreBoundFunctionsEqual(const DelegateFunctionType &left, const DelegateFunctionType &right)
         {
             constexpr size_t size = sizeof(DelegateFunctionType);
             std::byte leftArray[size] = { {(std::byte)0} };
@@ -200,6 +201,14 @@ namespace Platform::Delegates
             }
         }
 
+    public:
+        constexpr static bool AppliedHack()
+        {
+            constexpr auto size = sizeof(DelegateFunctionType);
+            return size == 40 || size == 64;
+        }
+
+    private:
         static void ResetAt(std::byte *leftArray, std::byte *rightArray, const size_t i)
         {
             leftArray[i] = (std::byte)0;
@@ -231,6 +240,9 @@ namespace Platform::Delegates
         std::shared_ptr<DelegateFunctionType> complexFunction = nullptr;
         std::shared_ptr<MemberMethodBase> memberMethod = nullptr;
     };
+
+    template <typename Any>
+    inline constexpr bool EnableDelegateSubtraction = false;
 }
 
 #endif
