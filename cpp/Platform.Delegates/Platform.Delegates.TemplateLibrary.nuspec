@@ -8,9 +8,10 @@
     <releaseNotes>Refactoring to since C++17 standard.
 Use Delegate constructor with deductions guides instead CreateDelegate function.
 Fixed calling function with rvalue-reference arguments.
+Removing C++20 content.
 First release version for conan.
 </releaseNotes>
-    <version>0.1.2</version>
+    <version>0.1.3</version>
     <authors>konard, poul250, uselessgoddess</authors>
     <owners>konard, poul250, uselessgoddess</owners>
     <copyright>konard, poul250, uselessgoddess</copyright>
