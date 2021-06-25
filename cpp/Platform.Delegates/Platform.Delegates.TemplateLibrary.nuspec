@@ -10,8 +10,8 @@ First release version.
 </releaseNotes>
     <version>0.1.0</version>
     <authors>konard, poul250, uselessgoddess</authors>
-    <owners>Konstantin Diachenko</owners>
-    <copyright>Konstantin Diachenko</copyright>
+    <owners>konard, poul250, uselessgoddess</owners>
+    <copyright>konard, poul250, uselessgoddess</copyright>
     <projectUrl>https://linksplatform.github.io/Delegates</projectUrl>
     <repository type="git" url="https://github.com/linksplatform/Delegates" />
     <icon>images/icon.png</icon>
