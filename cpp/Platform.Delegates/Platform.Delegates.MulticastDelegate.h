@@ -131,8 +131,8 @@ namespace Platform::Delegates
                 throw std::bad_function_call();
             }
             for (auto callbackIt = this->callbacks.rbegin();
-                 callbackIt != std::prev(this->callbacks.rend());
-                 ++callbackIt)
+                     callbackIt != std::prev(this->callbacks.rend());
+                     ++callbackIt)
             {
                 (*callbackIt)(args...);
             }
