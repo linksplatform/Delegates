@@ -62,15 +62,15 @@ namespace Platform::Delegates
         {
             if (simpleFunction)
             {
-                return simpleFunction(args...);
+                return simpleFunction(std::forward<decltype(args)>(args)...);
             }
             if (memberMethod)
             {
-                return (*memberMethod)(args...);
+                return (*memberMethod)(std::forward<decltype(args)>(args)...);
             }
             if (complexFunction)
             {
-                return (*complexFunction)(args...);
+                return (*complexFunction)(std::forward<decltype(args)>(args)...);
             }
 
             throw std::bad_function_call{};

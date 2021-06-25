@@ -135,9 +135,9 @@ namespace Platform::Delegates
                  callbackIt != std::prev(this->callbacks.rend());
                  ++callbackIt)
             {
-                (*callbackIt)(args...);
+                (*callbackIt)(std::forward<decltype(args)>(args)...);
             }
-            return this->callbacks.front()(args...);
+            return this->callbacks.front()(std::forward<decltype(args)>(args)...);
         }
 
     private:
