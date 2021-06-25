@@ -8,7 +8,7 @@
     <releaseNotes>Refactoring to since C++17 standard.
 First release version.
 </releaseNotes>
-    <version>0.1.0/version>
+    <version>0.1.0</version>
     <authors>Konstantin Diachenko</authors>
     <owners>Konstantin Diachenko</owners>
     <copyright>Konstantin Diachenko</copyright>
