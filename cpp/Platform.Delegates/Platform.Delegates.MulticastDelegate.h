@@ -107,7 +107,8 @@ namespace Platform::Delegates
         {
             const std::lock_guard lock{mutex};
             auto searchResult = std::find(this->callbacks.rbegin(), this->callbacks.rend(), callback);
-            if (searchResult != this->callbacks.rend()) {
+            if (searchResult != this->callbacks.rend())
+            {
                 this->callbacks.erase(searchResult.base());
             }
             return *this;
@@ -131,13 +132,14 @@ namespace Platform::Delegates
                 throw std::bad_function_call();
             }
             for (auto callbackIt = this->callbacks.rbegin();
-                    callbackIt != std::prev(this->callbacks.rend());
-                    ++callbackIt)
+                 callbackIt != std::prev(this->callbacks.rend());
+                 ++callbackIt)
             {
                 (*callbackIt)(args...);
             }
             return this->callbacks.front()(args...);
         }
+
     private:
         void MoveCallbacksUnsync(MulticastDelegate &&other)
         {
@@ -155,7 +157,6 @@ namespace Platform::Delegates
             {
                 return;
             }
-
             // To prevent the deadlock the order of locking should be the same for all threads.
             // We can use the addresses of MulticastDelegates to sort the mutexes.
             if (this < &other)

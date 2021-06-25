@@ -8,8 +8,8 @@
     <releaseNotes>Refactoring to since C++17 standard.
 First release version.
 </releaseNotes>
-    <version>0.1.0/version>
-    <authors>Konstantin Diachenko</authors>
+    <version>0.1.0</version>
+    <authors>konard, poul250, uselessgoddess</authors>
     <owners>Konstantin Diachenko</owners>
     <copyright>Konstantin Diachenko</copyright>
     <projectUrl>https://linksplatform.github.io/Delegates</projectUrl>
@@ -26,7 +26,6 @@ First release version.
     <file src="icon.png" target="images/icon.png" />
     <file src="Platform.Delegates.TemplateLibrary.targets" target="build\native\Platform.Delegates.TemplateLibrary.targets" />
     <file src="Platform.Delegates.h" target="lib\native\include\Platform.Delegates.h" />
-    <file src="Platform.Delegates.CreateDelegate.h" target="lib\native\include\Platform.Delegates.CreateDelegate.h" />
     <file src="Platform.Delegates.Delegate.h" target="lib\native\include\Platform.Delegates.Delegate.h" />
     <file src="Platform.Delegates.MulticastDelegate.h" target="lib\native\include\Platform.Delegates.MulticastDelegate.h" />
   </files>
