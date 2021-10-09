@@ -1,5 +1,4 @@
-#ifndef PLATFORM_DELEGATES_DELEGATE_H
-#define PLATFORM_DELEGATES_DELEGATE_H
+#pragma once
 
 // Based on https://stackoverflow.com/a/23974539/710069 and https://stackoverflow.com/a/35920804/710069
 
@@ -245,4 +244,3 @@ namespace Platform::Delegates
     Delegate(std::shared_ptr<Class> object, ReturnType(Class:: *member)(Args...)) -> Delegate<ReturnType(Args...)>;
 }
 
-#endif

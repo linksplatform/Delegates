@@ -1,5 +1,4 @@
-#ifndef PLATFORM_DELEGATES_MULTICASTDELEGATE_H
-#define PLATFORM_DELEGATES_MULTICASTDELEGATE_H
+#pragma once
 
 // Based on https://stackoverflow.com/a/23974539/710069 
 
@@ -184,4 +183,3 @@ namespace Platform::Delegates
     };
 }
 
-#endif
