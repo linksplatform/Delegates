@@ -74,7 +74,6 @@ namespace Platform::Delegates
             {
                 return (*complexFunction)(std::forward<decltype(args)>(args)...);
             }
-
             throw std::bad_function_call{};
         }
 
@@ -145,16 +144,6 @@ namespace Platform::Delegates
 
         Delegate(std::shared_ptr<MemberMethodBase> memberMethod) noexcept
             : memberMethod(std::move(memberMethod)) { }
-
-        static DelegateRawFunctionType *GetFunctionTarget(DelegateFunctionType &function) noexcept
-        {
-            DelegateRawFunctionType **functionPointer = function.template target<DelegateRawFunctionType *>();
-            if (!functionPointer)
-            {
-                return nullptr;
-            }
-            return *functionPointer;
-        }
 
         DelegateRawFunctionType *simpleFunction = nullptr;
         std::shared_ptr<DelegateFunctionType> complexFunction = nullptr;
