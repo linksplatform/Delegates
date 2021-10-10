@@ -160,14 +160,14 @@ namespace Platform::Delegates
             // We can use the addresses of MulticastDelegates to sort the mutexes.
             if (this < &other)
             {
-                std::lock_guard lock1(mutex);
-                std::lock_guard lock2(other.mutex);
+                std::lock_guard thisLock(mutex);
+                std::lock_guard otherLock(other.mutex);
                 CopyCallbacksUnsync(other);
             }
             else
             {
-                std::lock_guard lock1(other.mutex);
-                std::lock_guard lock2(mutex);
+                std::lock_guard otherLock(other.mutex);
+                std::lock_guard thisLock(mutex);
                 CopyCallbacksUnsync(other);
             }
         }
