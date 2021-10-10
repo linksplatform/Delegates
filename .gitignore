@@ -351,3 +351,6 @@ MigrationBackup/
 
 # GitHub folder
 .github/
+
+# C++ generated files
+a.out

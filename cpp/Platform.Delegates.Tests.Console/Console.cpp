@@ -76,14 +76,18 @@ int main()
     d0 += g;
     d0 += h;
 
+    std::function<void(const char *)> savedFunction = std::bind(&foo::bar, &f1, std::placeholders::_1);
+    std::shared_ptr<std::function<void(const char *)>> pointerToSavedFunction = std::make_shared<std::function<void(const char *)>>(std::move(savedFunction));
+
     d0 += Delegate(f0, &foo::bar);
     d0 += Delegate(f0, &foo::cbs);
-    d0 += std::bind(&foo::bar, &f1, std::placeholders::_1);
+    d0 += pointerToSavedFunction;
     d0 += std::bind(&foo::cbs, &f1, std::placeholders::_1);
     d0("first call");
     d0 -= g;
     d0 -= Delegate(f0, &foo::cbs);
-    d0 -= std::bind(&foo::bar, &f1, std::placeholders::_1);
+    d0 -= pointerToSavedFunction;
+    
     d0("second call");
 }
 

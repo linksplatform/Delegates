@@ -105,10 +105,10 @@ namespace Platform::Delegates
         MulticastDelegate &operator-=(const DelegateType &callback)
         {
             const std::lock_guard lock{mutex};
-            auto searchResult = std::find(this->callbacks.rbegin(), this->callbacks.rend(), callback);
-            if (searchResult != this->callbacks.rend())
+            auto searchResult = std::find(this->callbacks.begin(), this->callbacks.end(), callback);
+            if (searchResult != this->callbacks.end())
             {
-                this->callbacks.erase(searchResult.base());
+                this->callbacks.erase(searchResult);
             }
             return *this;
         }

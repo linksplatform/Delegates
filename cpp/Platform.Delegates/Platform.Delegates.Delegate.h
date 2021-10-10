@@ -30,6 +30,9 @@ namespace Platform::Delegates
         Delegate(const DelegateFunctionType &complexFunction)
             : complexFunction(std::make_shared<DelegateFunctionType>(complexFunction)) { }
 
+        Delegate(std::shared_ptr<DelegateFunctionType> complexFunctionPointer)
+            : complexFunction(complexFunctionPointer) { }
+
         template <typename Class>
         Delegate(std::shared_ptr<Class> object, ReturnType(Class:: *member)(Args...))
             : Delegate(std::make_shared<MemberMethod<Class>>(std::move(object), member)) { }
@@ -87,7 +90,7 @@ namespace Platform::Delegates
             }
             if (complexFunction && other.complexFunction)
             {
-                return AreFunctionsEqual(*complexFunction, *other.complexFunction);
+                return complexFunction == other.complexFunction;
             }
             return false;
         }
@@ -153,82 +156,6 @@ namespace Platform::Delegates
             return *functionPointer;
         }
 
-        static bool AreFunctionsEqual(DelegateFunctionType &left, DelegateFunctionType &right)
-        {
-            auto leftTargetPointer = GetFunctionTarget(left);
-            auto rightTargetPointer = GetFunctionTarget(right);
-            // Only in the case we have two std::functions created using std::bind we have to use alternative way to compare functions
-            if (!leftTargetPointer && !rightTargetPointer)
-            {
-                return AreBoundFunctionsEqual(left, right);
-            }
-            return leftTargetPointer == rightTargetPointer;
-        }
-
-        static bool AreBoundFunctionsEqual(const DelegateFunctionType &left, const DelegateFunctionType &right)
-        {
-            constexpr size_t size = sizeof(DelegateFunctionType);
-            std::byte leftArray[size] = {(std::byte)0};
-            std::byte rightArray[size] = {(std::byte)0};
-            new (&leftArray) DelegateFunctionType(left);
-            new (&rightArray) DelegateFunctionType(right);
-            //PrintBytes(leftArray, rightArray, size);
-            ApplyHack<size>(leftArray, rightArray);
-            return std::equal(std::begin(leftArray), std::end(leftArray), std::begin(rightArray));
-        }
-
-        // By resetting certain values we are able to compare functions correctly
-        // When values are reset it has the same effect as when these values are ignored
-        template<size_t size>
-        static void ApplyHack(std::byte *leftArray, std::byte *rightArray)
-        {
-            if constexpr (size == 64) // x64 (64-bit) MSC 19.24.28314 for x64
-            {
-                ResetAt(leftArray, rightArray, 16);
-                ResetAt(leftArray, rightArray, 56);
-                ResetAt(leftArray, rightArray, 57);
-            }
-            else if constexpr (size == 40) // x86 (32-bit) MSC 19.24.28314 for x64
-            {
-                ResetAt(leftArray, rightArray, 8);
-                ResetAt(leftArray, rightArray, 16);
-                ResetAt(leftArray, rightArray, 36);
-            }
-            else
-            {
-                // Throw exception to prevent memory damage
-                throw std::logic_error{"Comparison for function created using "
-                        "std::bind is not supported in your environment."};
-            }
-        }
-
-        static void ResetAt(std::byte *leftArray, std::byte *rightArray, const size_t i)
-        {
-            leftArray[i] = (std::byte)0;
-            rightArray[i] = (std::byte)0;
-        }
-
-        static void PrintBytes(std::byte *leftFirstByte, std::byte *rightFirstByte, const size_t size)
-        {
-            std::cout << "Left: " << std::endl;
-            PrintBytes(leftFirstByte, size);
-            std::cout << "Right: " << std::endl;
-            PrintBytes(rightFirstByte, size);
-        }
-
-        static void PrintBytes(std::byte *firstByte, const size_t size)
-        {
-            const std::byte *limitByte = firstByte + size;
-            std::byte *byte = firstByte;
-            size_t i = 0;
-            while (byte != limitByte)
-            {
-                std::cout << i << ':' << (int)*byte << std::endl;
-                i++;
-                byte++;
-            }
-        }
-
         DelegateRawFunctionType *simpleFunction = nullptr;
         std::shared_ptr<DelegateFunctionType> complexFunction = nullptr;
         std::shared_ptr<MemberMethodBase> memberMethod = nullptr;
@@ -243,4 +170,3 @@ namespace Platform::Delegates
     template <typename Class, typename ReturnType, typename... Args>
     Delegate(std::shared_ptr<Class> object, ReturnType(Class:: *member)(Args...)) -> Delegate<ReturnType(Args...)>;
 }
-
