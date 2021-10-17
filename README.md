@@ -22,6 +22,8 @@ Conan package: [platform.delegates](http://www.conan.io/center/platform.delegate
 ## Example
 
 ```C++
+#include <Platform.Delegates.h>
+
 void function(const char *str) 
 { 
     std::cout << "function(" << str << ")" << std::endl; 
