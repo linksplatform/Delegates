@@ -38,7 +38,7 @@ int main()
   event += lambda;
   event += memberMethod;
 
-  // Raise event
+  // Raise the event
   event("value");
 
   // Unsubscribe
