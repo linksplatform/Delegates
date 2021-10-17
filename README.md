@@ -41,10 +41,10 @@ int main()
 
     Delegate<void(const char *)> memberMethod(std::make_shared<Object>(), &Object::Method);
 
-    std::function<void(const char *)> lambda = [](const char *str) 
+    auto lambda = std::make_shared<std::function<void(const char *)>>([](const char *str) 
     { 
         std::cout << "lambda(" << str << ")" << std::endl;
-    };
+    });
 
     // Subscribe
     event += function;
