@@ -60,7 +60,10 @@ int main()
 
     std::function<void(const char *)> fx = f;
 
-    std::function<void(const char *)> lambda = [](const char *str) { std::cout << "lambda(" << str << ")\n"; };
+    auto lambda = std::make_shared<std::function<void(const char *)>>([](const char *str) 
+    { 
+        std::cout << "lambda(" << str << ")" << std::endl;
+    });
 
     d0 = d0 = d0;
     d0 = d1;
@@ -94,6 +97,7 @@ int main()
     d0 -= g;
     d0 -= Delegate(f0, &foo::cbs);
     d0 -= pointerToSavedFunction;
+    d0 -= lambda;
     
     d0("second call");
 }
