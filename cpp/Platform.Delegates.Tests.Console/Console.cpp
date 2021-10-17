@@ -60,6 +60,8 @@ int main()
 
     std::function<void(const char *)> fx = f;
 
+    std::function<void(const char *)> lambda = [](const char *str) { std::cout << "lambda(" << str << ")\n"; };
+
     d0 = d0 = d0;
     d0 = d1;
     d1 = d0;
@@ -72,14 +74,19 @@ int main()
     std::shared_ptr<foo> f0 = std::make_shared<foo>(0);
     foo f1(1);
 
+    Delegate<void(const char *)> memberMethod(std::make_shared<foo>(0), &foo::bar);
+
     d0 += g;
     d0 += g;
     d0 += h;
+    d0 += lambda;
+    // d0 += std::function<void(const char *)>(f);
 
     std::function<void(const char *)> savedFunction = std::bind(&foo::bar, &f1, std::placeholders::_1);
     std::shared_ptr<std::function<void(const char *)>> pointerToSavedFunction = std::make_shared<std::function<void(const char *)>>(std::move(savedFunction));
 
-    d0 += Delegate(f0, &foo::bar);
+    // d0 += Delegate(f0, &foo::bar);
+    d0 += memberMethod;
     d0 += Delegate(f0, &foo::cbs);
     d0 += pointerToSavedFunction;
     d0 += std::bind(&foo::cbs, &f1, std::placeholders::_1);
