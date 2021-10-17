@@ -3,3 +3,47 @@
 
 # Delegates
 LinksPlatform's Platform.Delegates Template Class Library
+
+Delegate and MulticastDelegate classes are modeled after [.NET Delegates](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/).
+
+Delegate is a container for callable function. Delegate can contain:
+* Pointer to simple function (represented by a single pointer).
+* Pointer to an instanse of class and to a member method of this class.
+* Pointer to std::function instance.
+
+Unlike std::function Delegate class supports primitive by reference comparision for equality.
+
+MulticastDelegate represents a collection of Delegates that are callable at the same time. If you call MulticastDelegate all Delegates added to its collection will be called. MulticastDelegate can be used as a basis for simple event model (similar of that you can find in .NET). Because Delegate class supports the comparision for equality you can both subscribe and unsubscribe any Delegate instance to MulticastDelegate. To be able to unsubscribe from event represented by MulticastDelegate instance you should store Delegate instance somewhere.
+
+```C++
+void function(const char *str) { std::cout << "function(" << str << ")\n"; }
+
+struct Object
+{
+    void Method(const char *str) {
+        std::cout << "Object::Method(" << str << ")" << std::endl;
+    }
+};
+
+int main()
+{
+  MulticastDelegate<void(const char *)> event;
+
+  Delegate<void(const char *)> memberMethod(std::make_shared<Object>(), &Object::Method);
+  
+  std::function<void(const char *)> lambda = [](const char *str) { std::cout << "lambda(" << str << ")\n"; };
+
+  // Subscribe
+  event += function;
+  event += lambda;
+  event += memberMethod;
+
+  // Raise event
+  event("value");
+
+  // Unsubscribe
+  event -= function;
+  event -= lambda;
+  event -= memberMethod;
+}
+```
