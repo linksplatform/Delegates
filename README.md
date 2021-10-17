@@ -30,7 +30,7 @@ struct Object
 };
 
 int main()
-    {
+{
     MulticastDelegate<void(const char *)> event;
 
     Delegate<void(const char *)> memberMethod(std::make_shared<Object>(), &Object::Method);
