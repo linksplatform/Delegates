@@ -16,34 +16,41 @@ Unlike std::function Delegate class supports primitive by reference comparision 
 MulticastDelegate represents a thread-safe collection of Delegates that are callable at the same time. If you call MulticastDelegate all Delegates added to its collection will be called. MulticastDelegate can be used as a basis for simple event model (similar of that you can find in .NET). Because Delegate class supports the comparision for equality you can both subscribe and unsubscribe any Delegate instance to MulticastDelegate. To be able to unsubscribe from event represented by MulticastDelegate instance you should store Delegate instance somewhere. Due to its thread safaty MulticastDelegate instance can be global/static object to which every thread is safe to subscribe.
 
 ```C++
-void function(const char *str) { std::cout << "function(" << str << ")\n"; }
+void function(const char *str) 
+{ 
+    std::cout << "function(" << str << ")\n"; 
+}
 
 struct Object
 {
-    void Method(const char *str) {
+    void Method(const char *str) 
+    {
         std::cout << "Object::Method(" << str << ")" << std::endl;
     }
 };
 
 int main()
-{
-  MulticastDelegate<void(const char *)> event;
+    {
+    MulticastDelegate<void(const char *)> event;
 
-  Delegate<void(const char *)> memberMethod(std::make_shared<Object>(), &Object::Method);
-  
-  std::function<void(const char *)> lambda = [](const char *str) { std::cout << "lambda(" << str << ")\n"; };
+    Delegate<void(const char *)> memberMethod(std::make_shared<Object>(), &Object::Method);
 
-  // Subscribe
-  event += function;
-  event += lambda;
-  event += memberMethod;
+    std::function<void(const char *)> lambda = [](const char *str) 
+    { 
+        std::cout << "lambda(" << str << ")\n";
+    };
 
-  // Raise the event
-  event("value");
+    // Subscribe
+    event += function;
+    event += lambda;
+    event += memberMethod;
 
-  // Unsubscribe
-  event -= function;
-  event -= lambda;
-  event -= memberMethod;
+    // Raise the event
+    event("value");
+
+    // Unsubscribe
+    event -= function;
+    event -= lambda;
+    event -= memberMethod;
 }
 ```
