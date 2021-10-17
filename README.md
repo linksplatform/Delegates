@@ -15,6 +15,12 @@ Unlike std::function Delegate class supports primitive by reference comparision 
 
 MulticastDelegate represents a thread-safe collection of Delegates that are callable at the same time. If you call MulticastDelegate all Delegates added to its collection will be called. MulticastDelegate can be used as a basis for simple event model (similar of that you can find in .NET). Because Delegate class supports the comparision for equality you can both subscribe and unsubscribe any Delegate instance to MulticastDelegate. To be able to unsubscribe from event represented by MulticastDelegate instance you should store Delegate instance somewhere. Due to its thread safaty MulticastDelegate instance can be global/static object to which every thread is safe to subscribe.
 
+NuGet package: [Platform.Delegates.TemplateLibrary](https://www.nuget.org/packages/Platform.Delegates.TemplateLibrary)
+
+Conan package: [platform.delegates](http://www.conan.io/center/platform.delegates)
+
+## Example
+
 ```C++
 void function(const char *str) 
 { 
