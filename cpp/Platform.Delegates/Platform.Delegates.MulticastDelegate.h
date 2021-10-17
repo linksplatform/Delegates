@@ -123,6 +123,8 @@ namespace Platform::Delegates
             return *this -= DelegateType{callback};
         }
 
+        MulticastDelegate &operator-=(const DelegateFunctionType &&callback) = delete;
+
         ReturnType operator()(Args... args) override
         {
             const std::lock_guard lock(mutex);
