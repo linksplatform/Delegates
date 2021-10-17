@@ -102,6 +102,15 @@ namespace Platform::Delegates
             return *this += DelegateType{callback};
         }
 
+        MulticastDelegate &operator-=(auto&& rvalue)
+        requires
+            std::is_rvalue_reference_v<decltype(rvalue)> &&
+            (!std::same_as<std::decay_t<decltype(rvalue)>, DelegateType>)
+        {
+            static_assert(!std::is_rvalue_reference_v<decltype(rvalue)>,
+                    "function must have address");
+        }
+
         MulticastDelegate &operator-=(const DelegateType &callback)
         {
             const std::lock_guard lock{mutex};
