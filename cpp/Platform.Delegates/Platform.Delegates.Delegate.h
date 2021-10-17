@@ -94,18 +94,12 @@ namespace Platform::Delegates
             return false;
         }
 
-        virtual bool operator!=(const Delegate &other) const
-        {
-            return !(*this == other);
-        }
-
     private:
         class MemberMethodBase
         {
         public:
             virtual ReturnType operator()(Args... args) = 0;
             virtual bool operator== (const MemberMethodBase &other) const = 0;
-            virtual bool operator!= (const MemberMethodBase &other) const = 0;
             virtual ~MemberMethodBase() = default;
         };
 
@@ -130,11 +124,6 @@ namespace Platform::Delegates
                 }
                 return this->object == otherMethod->object
                     && this->method == otherMethod->method;
-            }
-
-            bool operator!=(const MemberMethodBase &other) const override
-            {
-                return !(*this == other);
             }
 
         private:
