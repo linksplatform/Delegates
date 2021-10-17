@@ -18,7 +18,7 @@ MulticastDelegate represents a thread-safe collection of Delegates that are call
 ```C++
 void function(const char *str) 
 { 
-    std::cout << "function(" << str << ")\n"; 
+    std::cout << "function(" << str << ")" << std::endl; 
 }
 
 struct Object
@@ -37,7 +37,7 @@ int main()
 
     std::function<void(const char *)> lambda = [](const char *str) 
     { 
-        std::cout << "lambda(" << str << ")\n";
+        std::cout << "lambda(" << str << ")" << std::endl;
     };
 
     // Subscribe
