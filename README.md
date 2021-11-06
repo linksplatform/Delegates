@@ -2,7 +2,7 @@
 [![ConanCenter package](https://repology.org/badge/version-for-repo/conancenter/platform.delegates.svg)](https://conan.io/center/platform.delegates)
 
 # Delegates
-LinksPlatform's Platform.Delegates Template Class Library
+LinksPlatform's Platform::Delegates Template Class Library
 
 Delegate and MulticastDelegate classes are modeled after [.NET Delegates](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/).
 
