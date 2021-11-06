@@ -1,5 +1,6 @@
-[![ConanCenter package](https://repology.org/badge/version-for-repo/conancenter/platform.delegates.svg)](https://conan.io/center/platform.delegates)
 [![NuGet Version and Downloads count](https://buildstats.info/nuget/Platform.Delegates.TemplateLibrary)](https://www.nuget.org/packages/Platform.Delegates.TemplateLibrary)
+[![ConanCenter package](https://repology.org/badge/version-for-repo/conancenter/platform.delegates.svg)](https://conan.io/center/platform.delegates)
+
 
 # Delegates
 LinksPlatform's Platform.Delegates Template Class Library
