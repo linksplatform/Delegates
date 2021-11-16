@@ -23,11 +23,4 @@ Unsubscribe by rvalue from MulticastDelegate is disabled.</releaseNotes>
       <group targetFramework="native"></group>
     </dependencies>
   </metadata>
-  <files>
-    <file src="icon.png" target="images/icon.png" />
-    <file src="Platform.Delegates.TemplateLibrary.targets" target="build\native\Platform.Delegates.TemplateLibrary.targets" />
-    <file src="Platform.Delegates.h" target="lib\native\include\Platform.Delegates.h" />
-    <file src="Platform.Delegates.Delegate.h" target="lib\native\include\Platform.Delegates.Delegate.h" />
-    <file src="Platform.Delegates.MulticastDelegate.h" target="lib\native\include\Platform.Delegates.MulticastDelegate.h" />
-  </files>
 </package>
