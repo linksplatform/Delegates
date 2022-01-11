@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Description>LinksPlatform's Platform.Delegates Class Library</Description>
+        <Copyright>konard, FreePhoenix888</Copyright>
+        <AssemblyTitle>Platform.Delegates</AssemblyTitle>
+        <VersionPrefix>0.0.1</VersionPrefix>
+        <Authors>konard, FreePhoenix888</Authors>
+        <TargetFrameworks>net472;netstandard2.0;netstandard2.1;net5</TargetFrameworks>
+        <AssemblyName>Platform.Delegates</AssemblyName>
+        <PackageId>Platform.Delegates</PackageId>
+        <PackageTags>LinksPlatform;Delegates</PackageTags>
+        <PackageIconUrl>https://raw.githubusercontent.com/linksplatform/Documentation/18469f4d033ee9a5b7b84caab9c585acab2ac519/doc/Avatar-rainbow-icon-64x64.png</PackageIconUrl>
+        <PackageProjectUrl>https://linksplatform.github.io/Delegates</PackageProjectUrl>
+        <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>git://github.com/linksplatform/Delegates</RepositoryUrl>
+        <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+        <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <LangVersion>latest</LangVersion>
+        <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+    </PropertyGroup>
+
+</Project>
