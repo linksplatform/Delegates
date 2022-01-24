@@ -25,6 +25,7 @@
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <LangVersion>latest</LangVersion>
         <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+      <Nullable>enable</Nullable>
     </PropertyGroup>
 
 </Project>
