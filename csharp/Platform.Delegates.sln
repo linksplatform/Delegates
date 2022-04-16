@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Platform.Delegates.TemplateLibrary", "cpp\Platform.Delegates\Platform.Delegates.TemplateLibrary.vcxproj", "{C9325BAC-3C01-497C-B7DE-58997EE9CC3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Delegates", "csharp\Platform.Delegates\Platform.Delegates.csproj", "{7C61A172-4DE6-4F61-9560-AC1AAA81C282}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Delegates", "Platform.Delegates\Platform.Delegates.csproj", "{7C61A172-4DE6-4F61-9560-AC1AAA81C282}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
