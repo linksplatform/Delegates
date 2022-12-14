@@ -4,7 +4,7 @@
         <Description>LinksPlatform's Platform.Delegates Class Library</Description>
         <Copyright>FreePhoenix888</Copyright>
         <AssemblyTitle>Platform.Delegates</AssemblyTitle>
-        <VersionPrefix>0.0.1</VersionPrefix>
+        <VersionPrefix>0.1.0</VersionPrefix>
         <Authors>FreePhoenix888</Authors>
         <TargetFramework>net7</TargetFramework>
         <AssemblyName>Platform.Delegates</AssemblyName>
@@ -23,7 +23,7 @@
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <LangVersion>latest</LangVersion>
-        <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+        <PackageReleaseNotes>Change target frameworks to net7.</PackageReleaseNotes>
       <Nullable>enable</Nullable>
     </PropertyGroup>
 
