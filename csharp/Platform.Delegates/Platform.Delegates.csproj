@@ -23,7 +23,7 @@
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <LangVersion>latest</LangVersion>
-        <PackageReleaseNotes>Change target frameworks to net7.</PackageReleaseNotes>
+        <PackageReleaseNotes>Fix bugs.</PackageReleaseNotes>
       <Nullable>enable</Nullable>
     </PropertyGroup>
 
