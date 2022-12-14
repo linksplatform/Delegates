@@ -4,7 +4,7 @@
         <Description>LinksPlatform's Platform.Delegates Class Library</Description>
         <Copyright>FreePhoenix888</Copyright>
         <AssemblyTitle>Platform.Delegates</AssemblyTitle>
-        <VersionPrefix>0.1.0</VersionPrefix>
+        <VersionPrefix>0.1.1</VersionPrefix>
         <Authors>FreePhoenix888</Authors>
         <TargetFramework>net7</TargetFramework>
         <AssemblyName>Platform.Delegates</AssemblyName>
