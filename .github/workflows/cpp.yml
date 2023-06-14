@@ -35,11 +35,7 @@ jobs:
           conan profile detect
       - name: Instll conan packages
         run: |
-          if [ -f "install-local-conan-dependencies.sh" ]; then
-              echo "install-local-conan-dependencies.sh exists."
-              chmod +x ./install-local-conan-dependencies.sh
-              ./install-local-conan-dependencies.sh
-          fi
+          conan install .
       - name: Test and scan-build
         run: |
           CXX=clang++
