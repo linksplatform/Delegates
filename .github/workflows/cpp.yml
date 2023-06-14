@@ -35,7 +35,7 @@ jobs:
           conan profile detect
       - name: Instll conan packages
         run: |
-          conan install .
+          conan install . --build=missing
       - name: Test and scan-build
         run: |
           CXX=clang++
