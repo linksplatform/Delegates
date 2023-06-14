@@ -3,7 +3,7 @@ set(LINKS_PLATFORM_TESTS ON CACHE BOOL "Whether to compile tests")
 
 project(Platform.Delegates CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/build)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
 find_package(GTest REQUIRED)
 
 add_library(${PROJECT_NAME}.Library INTERFACE)
