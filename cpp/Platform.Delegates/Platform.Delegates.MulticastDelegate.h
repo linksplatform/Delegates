@@ -123,7 +123,10 @@ namespace Platform::Delegates
             return *this -= DelegateType{callback};
         }
 
-        MulticastDelegate &operator-=(const DelegateFunctionType &&callback) = delete;
+        MulticastDelegate &operator-=(const DelegateFunctionType &&callback)
+        {
+            return *this -= DelegateType{callback};
+        }
 
         ReturnType operator()(Args... args) override
         {
