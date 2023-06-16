@@ -23,11 +23,8 @@ jobs:
       - uses: actions/checkout@v1
         with:
           submodules: true
-      - name: Setup clang
-        uses: egor-tensin/setup-clang@v1
-        with:
-          version: 13
-          platform: x64
+      - name: Setup gcc
+        run: sudo apt install build-essential
       - name: Install conan
         run: pip install conan
       - name: Setup conan
