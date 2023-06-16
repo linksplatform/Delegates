@@ -33,12 +33,13 @@ jobs:
       - name: Instll conan packages
         run: |
           conan install . --build=missing
+          ls
       - name: Test and scan-build
         run: |
+          ls
           cmake_flags="-DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DLINKS_PLATFORM_TESTS=TRUE"
           cmake . "$cmake_flags"
           cmake --build .
-          ls
   pushToNuget:
     runs-on: ubuntu-latest
     needs: test
