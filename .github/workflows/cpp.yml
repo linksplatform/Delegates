@@ -1,76 +1,25 @@
-name: cpp
+name: Test cpp
 
 on:
   push:
-    branches: main
+    branches:
+      - 'main'
     paths:
-      - 'cpp/**'
-      - '.github/workflows/cpp.yml'
-
-env:
-  NUGETTOKEN: ${{ secrets.NUGET_TOKEN }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  SCRIPTS_BASE_URL: https://raw.githubusercontent.com/linksplatform/Scripts/main/MultiProjectRepository
-
-defaults:
-  run:
-    working-directory: cpp
-
+      - 'cpp/**.h'
+      - 'cpp/**.cpp'
+      - 'cpp/CMakeLists.txt'
+      - 'cpp/conanfile.txt'
+  pull_request:
+    types:
+      - edited
+    branches:
+      - 'main'
+    paths:
+      - 'cpp/**.h'
+      - 'cpp/**.cpp'
+      - 'cpp/CMakeLists.txt'
+      - 'cpp/conanfile.txt'
+      
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-        with:
-          submodules: true
-      - name: Setup gcc
-        run: sudo apt install build-essential
-      - name: Install conan
-        run: pip install conan
-      - name: Setup conan
-        run: |
-          conan profile detect
-      - name: Instll conan packages
-        run: |
-          conan install . --build=missing
-      - name: Test and scan-build
-        run: |
-          cmake_flags="-DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DLINKS_PLATFORM_TESTS=TRUE"
-          cmake . "$cmake_flags"
-          cmake --build .
-  pushToNuget:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-    - uses: actions/checkout@v1
-      with:
-        submodules: true
-    - name: Read package information
-      run: |
-        export REPOSITORY_NAME=$(basename ${{ github.repository }})
-        wget "$SCRIPTS_BASE_URL/read_cpp_package_info.sh"
-        bash ./read_cpp_package_info.sh
-    - name: Publish NuGet package
-      run: |
-        export REPOSITORY_NAME=$(basename ${{ github.repository }})
-        wget "$SCRIPTS_BASE_URL/push-cpp-nuget.sh"
-        bash ./push-cpp-nuget.sh
-  publiseRelease:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - uses: actions/checkout@v1
-        with:
-          submodules: true
-      - name: Read project information
-        run: |
-          export REPOSITORY_NAME=$(basename ${{ github.repository }})
-          wget "$SCRIPTS_BASE_URL/read_cpp_package_info.sh"
-          bash ./read_cpp_package_info.sh
-      - name: Publish release
-        run: |
-          export REPOSITORY_NAME=$(basename ${{ github.repository }})
-          wget "$SCRIPTS_BASE_URL/publish-release.sh"
-          chmod +x ./publish-release.sh
-          wget "$SCRIPTS_BASE_URL/publish-cpp-release.sh"
-          bash ./publish-cpp-release.sh
+  main:
+    uses: linksplatform/Workflows/.github/workflows/cpp-test.yml@main
