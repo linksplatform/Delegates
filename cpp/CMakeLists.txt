@@ -5,6 +5,7 @@ project(Platform.Delegates CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
 find_package(GTest REQUIRED)
+include_directories(${GTest_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME}.Library INTERFACE)
 target_include_directories(${PROJECT_NAME}.Library INTERFACE ${PROJECT_NAME})
