@@ -6,7 +6,7 @@
     <summary>LinksPlatform's Platform.Delegates is a Template Library what contains abstract class templates to enable simple events.</summary>
     <description>LinksPlatform's Platform.Delegates is a Template Library what contains set of C++ abstract class templates for a simple event engine. Use Platform.Delegates.h file to include the library.</description>
     <releaseNotes>Test version.</releaseNotes>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <authors>konard, poul250, uselessgoddess</authors>
     <owners>konard, poul250, uselessgoddess</owners>
     <copyright>konard, poul250, uselessgoddess</copyright>
