@@ -1,4 +1,4 @@
-[![NuGet Version and Downloads count](https://buildstats.info/nuget/Platform.Delegates.TemplateLibrary)](https://www.nuget.org/packages/Platform.Delegates.TemplateLibrary)
+[![NuGet Version and Downloads count](https://img.shields.io/nuget/v/Platform.Delegates.TemplateLibrary?label=nuget&style=flat)](https://www.nuget.org/packages/Platform.Delegates.TemplateLibrary)
 [![ConanCenter package](https://repology.org/badge/version-for-repo/conancenter/platform.delegates.svg)](https://conan.io/center/platform.delegates)
 
 # Delegates
