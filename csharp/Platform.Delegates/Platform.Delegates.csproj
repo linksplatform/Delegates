@@ -6,7 +6,7 @@
         <AssemblyTitle>Platform.Delegates</AssemblyTitle>
         <VersionPrefix>0.1.1</VersionPrefix>
         <Authors>FreePhoenix888</Authors>
-        <TargetFramework>net7</TargetFramework>
+        <TargetFramework>net8</TargetFramework>
         <AssemblyName>Platform.Delegates</AssemblyName>
         <PackageId>Platform.Delegates</PackageId>
         <PackageTags>LinksPlatform;Delegates</PackageTags>
