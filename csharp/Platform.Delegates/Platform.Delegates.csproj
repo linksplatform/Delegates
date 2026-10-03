@@ -24,7 +24,12 @@
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <LangVersion>latest</LangVersion>
         <PackageReleaseNotes>Update target framework from net7 to net8.</PackageReleaseNotes>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
       <Nullable>enable</Nullable>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
 
 </Project>

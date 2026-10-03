@@ -15,9 +15,13 @@
     <icon>images/icon.png</icon>
     <tags>C++ Native Delegates Delegate MulticastDelegate</tags>
     <license type="expression">MIT</license>
+    <readme>README.md</readme>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <dependencies>
       <group targetFramework="native"></group>
     </dependencies>
   </metadata>
+  <files>
+    <file src="../../README.md" target="" />
+  </files>
 </package>
