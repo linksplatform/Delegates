@@ -5,9 +5,33 @@
 #include <memory>
 #include <iostream>
 #include <functional>
+#include <tuple>
+#include <concepts>
 
 namespace Platform::Delegates
 {
+    // Type deduction helper for member function pointers
+    template <typename M>
+    struct MemberFunctionTraits;
+
+    template <typename TClass, typename TReturn, typename... TArgs>
+    struct MemberFunctionTraits<TReturn (TClass::*)(TArgs...)>
+    {
+        using class_type = TClass;
+        using return_type = TReturn;
+        using argument_types = std::tuple<TArgs...>;
+        using function_signature = TReturn(TArgs...);
+    };
+
+    template <typename TClass, typename TReturn, typename... TArgs>
+    struct MemberFunctionTraits<TReturn (TClass::*)(TArgs...) const>
+    {
+        using class_type = TClass;
+        using return_type = TReturn;
+        using argument_types = std::tuple<TArgs...>;
+        using function_signature = TReturn(TArgs...);
+    };
+
     template <typename...>
     class Delegate;
 
@@ -147,4 +171,36 @@ namespace Platform::Delegates
 
     template <typename Class, typename ReturnType, typename... Args>
     Delegate(std::shared_ptr<Class> object, ReturnType(Class:: *member)(Args...)) -> Delegate<ReturnType(Args...)>;
+
+    // Method pointer-based delegate for automatic type deduction
+    template <auto method>
+    class MethodDelegate
+    {
+        using Traits = MemberFunctionTraits<decltype(method)>;
+        using TClass = typename Traits::class_type;
+        using TReturn = typename Traits::return_type;
+        using TArgsTuple = typename Traits::argument_types;
+        
+        std::shared_ptr<TClass> object;
+
+    public:
+        constexpr MethodDelegate(std::shared_ptr<TClass> obj) noexcept : object(std::move(obj)) { }
+
+        template<typename ...TArgs>
+        TReturn operator()(TArgs&&... args)
+        {
+            return (*object.*method)(std::forward<TArgs>(args)...);
+        }
+
+        bool operator==(const MethodDelegate &other) const
+        {
+            return object == other.object;
+        }
+
+        // Allow conversion to the traditional Delegate type
+        operator Delegate<typename Traits::function_signature>() const
+        {
+            return Delegate<typename Traits::function_signature>(object, method);
+        }
+    };
 }
