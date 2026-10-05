@@ -33,9 +33,9 @@ namespace Platform::Delegates
         Delegate(std::shared_ptr<DelegateFunctionType> complexFunctionPointer)
             : complexFunction(complexFunctionPointer) { }
 
-        template <typename Class>
-        Delegate(std::shared_ptr<Class> object, ReturnType(Class:: *member)(Args...))
-            : Delegate(std::make_shared<MemberMethod<Class>>(std::move(object), member)) { }
+        template <typename ObjectClass, typename MemberClass>
+        Delegate(std::shared_ptr<ObjectClass> object, ReturnType(MemberClass:: *member)(Args...))
+            : Delegate(std::make_shared<MemberMethod<MemberClass>>(std::static_pointer_cast<MemberClass>(object), member)) { }
 
         virtual ~Delegate() = default;
 
@@ -145,6 +145,6 @@ namespace Platform::Delegates
     template <typename ReturnType, typename... Args>
     Delegate(std::function<ReturnType(Args...)> function) -> Delegate<ReturnType(Args...)>;
 
-    template <typename Class, typename ReturnType, typename... Args>
-    Delegate(std::shared_ptr<Class> object, ReturnType(Class:: *member)(Args...)) -> Delegate<ReturnType(Args...)>;
+    template <typename ObjectClass, typename MemberClass, typename ReturnType, typename... Args>
+    Delegate(std::shared_ptr<ObjectClass> object, ReturnType(MemberClass:: *member)(Args...)) -> Delegate<ReturnType(Args...)>;
 }
